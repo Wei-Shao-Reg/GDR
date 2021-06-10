@@ -18,7 +18,7 @@ To efficiently run the GDR code, we recommend a minimum computer memory of 256GB
 
 ### BibTeX
 
-If you use this code, please cite the following papers:
+If you use this code, please cite the following paper:
 
 ```bibtex
 @article{Shao_GDR_2021,
