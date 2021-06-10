@@ -13,3 +13,18 @@ This code has been tested on several treatment planing 4DCT scans and the follow
 
 ### Computation Requirement
 To efficiently run the GDR code, we recommend a minimum computer memory of 256GB and a minimum number of CPU cores to be 16.
+
+
+
+### BibTeX
+
+If you use this code, please cite the following papers:
+
+```bibtex
+@article{Shao_GDR——2021,
+	year = 2021,
+	author = {Wei Shao and Yue Pan and Oguz C. Durumeric and Joseph M. Reinhardt and John E. Bayouth and Mirabela Rusu and Gary E. Christensen},
+	title = {Geodesic Density Regression for Correcting {4DCT} Pulmonary Respiratory Motion Artifacts},
+	journal = {Medical Image Analysis}
+}
+```
