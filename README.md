@@ -14,12 +14,8 @@ This code has been tested on several treatment planing 4DCT scans and the follow
 ### Computation Requirement
 To efficiently run the GDR code, we recommend a minimum computer memory of 256GB and a minimum number of CPU cores to be 16.
 
-### How to Install
-1. Clone the repository:
-```
-git clone https://github.com/Wei-Shao-Reg/GDR.git
-```
-2. Install the Insight Toolkit (ITK)
+### How to Install the GDR Program
+1. Install the Insight Toolkit (ITK)
 ```
 1) Download ITK 4.8.2 source code: 
 wget https://sourceforge.net/projects/itk/files/itk/4.8/InsightToolkit-4.8.2.tar.gz
@@ -29,7 +25,23 @@ mkdir ITK-bld
 cd ITK-bld
 ccmake ../InsightToolkit-4.8.2 with the following options: [ModuleITKReview] ON, and [ITKV3COMPATIBILITY] ON
 ```
-4. 
+
+2. Intall CMake by following instructions in https://cmake.org/install/.
+
+3. Clone the repository:
+```
+git clone https://github.com/Wei-Shao-Reg/GDR.git
+mkdir GDR-bld
+cd GDR-bld
+ccmake ../GDR/code/
+make
+```
+
+### How to Run the GDR Program
+```
+1. Create a parameter file, see parameter/param.txt for an example and parameter/param_exp.txt for an explaination of the parameters
+2. Run the GDR regression by running GDR3D param.txt.
+```
 
 ### BibTeX
 
