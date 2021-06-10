@@ -10,4 +10,5 @@ The GDR algorithm removes respiratory motion artifacts in 4DCT lung images by (1
 
 This code has been tested on treatment planing 4DCT and the results show its promising performance in reducing real motion artifact.
 
-### System Requirement
+### Computation Requirement
+To efficiently run the GDR code, we recommend a minimum computer memory of 256GB and a minimum number of CPU cores to be 16.
