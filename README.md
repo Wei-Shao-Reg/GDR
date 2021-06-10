@@ -39,7 +39,7 @@ make
 
 ### How to Run the GDR Program
 ```
-1. Create a parameter file, see parameter/param.txt for an example and parameter/param_exp.txt for an explaination of the parameters
+1. Create a parameter file, see parameter/param.txt for an example and parameter/param_exp.txt for an explanation of the parameters.
 2. Run the GDR regression by running GDR3D param.txt.
 ```
 
