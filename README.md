@@ -14,7 +14,18 @@ This code has been tested on several treatment planing 4DCT scans and the follow
 ### Computation Requirement
 To efficiently run the GDR code, we recommend a minimum computer memory of 256GB and a minimum number of CPU cores to be 16.
 
-
+### How to Install
+1. Clone the repository:
+```
+git clone https://github.com/Wei-Shao-Reg/GDR.git
+```
+2. Install the Insight Toolkit (ITK)
+```
+1) Download ITK 4.8.2 source code: 
+wget https://sourceforge.net/projects/itk/files/itk/4.8/InsightToolkit-4.8.2.tar.gz
+tar xvzf InsightToolkit-4.8.2.tar.gz
+```
+4. 
 
 ### BibTeX
 
