@@ -24,6 +24,10 @@ git clone https://github.com/Wei-Shao-Reg/GDR.git
 1) Download ITK 4.8.2 source code: 
 wget https://sourceforge.net/projects/itk/files/itk/4.8/InsightToolkit-4.8.2.tar.gz
 tar xvzf InsightToolkit-4.8.2.tar.gz
+2) Install ITK
+mkdir ITK-bld
+cd ITK-bld
+ccmake ../InsightToolkit-4.8.2 with the following options: [ModuleITKReview] ON, and [ITKV3COMPATIBILITY] ON
 ```
 4. 
 
