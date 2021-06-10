@@ -1,0 +1,75 @@
+InputImage={image path}/20EX.nii.gz,t=0
+InputImage={image path}/0EX.nii.gz,t=2
+InputImage={image path}/20IN.nii.gz,t=4
+InputImage={image path}/40IN.nii.gz,t=6
+InputImage={image path}/60IN.nii.gz,t=8
+InputImage={image path}/80IN.nii.gz,t=10
+InputImage={image path}/100IN.nii.gz,t=12
+InputImage={image path}/80EX.nii.gz,t=14
+InputImage={image path}/60EX.nii.gz,t=16
+InputImage={image path}/40EX.nii.gz,t=18
+InputImage={image path}/20EX.nii.gz,t=20
+
+
+
+InputMask={image path}/20EX_lung_mask.nii.gz,t=0
+InputMask={image path}/0EX_lung_mask.nii.gz,t=2
+InputMask={image path}/20IN_lung_mask.nii.gz,t=4
+InputMask={image path}/40IN_lung_mask.nii.gz,t=6
+InputMask={image path}/60IN_lung_mask.nii.gz,t=8
+InputMask={image path}/80IN_lung_mask.nii.gz,t=10
+InputMask={image path}/100IN_lung_mask.nii.gz,t=12
+InputMask={image path}/80EX_lung_mask.nii.gz,t=14
+InputMask={image path}/60EX_lung_mask.nii.gz,t=16
+InputMask={image path}/40EX_lung_mask.nii.gz,t=18
+InputMask={image path}/20EX_lung_mask.nii.gz,t=20
+
+
+### masks used to indicate if a voxel has artifact, 0 with artifact, 1 artifact-free
+ArtifactMask={image path}/20EX_artifact_mask.nii.gz,t=0
+ArtifactMask={image path}/0EX_artifact_mask.nii.gz,t=2
+ArtifactMask={image path}/20IN_artifact_mask.nii.gz,t=4
+ArtifactMask={image path}/40IN_artifact_mask.nii.gz,t=6
+ArtifactMask={image path}/60IN_artifact_mask.nii.gz,t=8
+ArtifactMask={image path}/80IN_artifact_mask.nii.gz,t=10
+ArtifactMask={image path}/100IN_artifact_mask.nii.gz,t=12
+ArtifactMask={image path}/80EX_artifact_mask.nii.gz,t=14
+ArtifactMask={image path}/60EX_artifact_mask.nii.gz,t=16
+ArtifactMask={image path}/40EX_artifact_mask.nii.gz,t=18
+ArtifactMask={image path}/20EX_artifact_mask.nii.gz,t=20
+
+
+# SSD or SSTVD
+similarityCostType=SSTVD
+
+# staring point of final displacement field computation
+outputDispStartTime=1
+
+# time points at which to output a displacement field
+outputDispTimes=6
+
+# fix the template image or not,True or False
+fixedTemplate=False
+
+numberOfResolutions=4
+
+imageWeights=0.06,0.06,0.06,0.06
+
+# in physical units
+imageSmoothingFactors=8,4,2,1
+
+downsampleFactors=8,4,2,1
+
+# change this to deformation kernel size
+deformationKernelSizes=96,48,24,12
+
+stepSizes= 0.02,0.002,0.0005,0.0001
+
+numberOfIterations=20,20,20,20
+
+epsilons=0.001,0.001,0.001,0.001
+
+# Lagrangian for push-forward, Eulerian for pull-back
+outputDispType=Lagrangian
+
+outputDirectory=/Shared/Christensen_Lab/WeiDissertation/3D/GDR_accuracy/PFS001/SCAN1/output_GDR_LBFGS/
