@@ -1,9 +1,9 @@
 /**
  Geodesic regression of time-series 3D CT images by flow of transformation maps
- @filename geodesicRegression3DFlowMaps.cxx
+ @filename GDR3D.cxx
  @author Wei Shao
  @advisor Gary Christensen
- @version 1.0 Novermber 12, 2018
+ @version 1.0 June 11, 2021
  */
 
 #include <cstdlib>
@@ -35,7 +35,6 @@
 #include "itkDisplacementFieldJacobianDeterminantFilter.h"
 #include <fstream>
 #include "itkDivideImageFilter.h"
-//#include "QuickView.h"
 #include <chrono>  // for high_resolution_clock
 
 using namespace std;
