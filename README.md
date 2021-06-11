@@ -43,6 +43,9 @@ make
 2. Run the GDR regression by running GDR3D param.txt.
 ```
 
+### Contact Informaiton
+If you have any trouble installing or runing the program, you can contact Wei Shao via weishao@stanford.edu.
+
 ### BibTeX
 
 If you use this code, please cite the following paper:
