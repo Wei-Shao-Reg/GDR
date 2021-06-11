@@ -44,7 +44,7 @@ make
 ```
 
 ### Contact Informaiton
-If you have any trouble installing or runing the program, you can contact Wei Shao via weishao@stanford.edu.
+If you have any trouble installing or running the program, you can contact Wei Shao via weishao@stanford.edu.
 
 ### BibTeX
 
