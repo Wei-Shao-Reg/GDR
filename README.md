@@ -15,7 +15,9 @@ We have demonstrated that the GDR algorithm is more effective than the state-of-
 To efficiently run the GDR code, we recommend a Linux machine with a minimum computer memory of 256GB and a minimum number of CPU cores of 16.
 
 ### Steps to Install the GDR Program
-1. Install the Insight Toolkit (ITK)
+1. Intall proper CMake version (3.1.0 and above) if do not have one ready on your machine https://cmake.org/install/.
+
+2. Install the Insight Toolkit (ITK)
 ```
 1) Download ITK 4.8.2 source code: 
 wget https://sourceforge.net/projects/itk/files/itk/4.13/InsightToolkit-4.13.2.tar.gz
@@ -26,8 +28,6 @@ cd ITK-bld
 ccmake ../InsightToolkit-4.13.2 with the following options: [Module_ITKReview] ON, [Module_ITKV3COMPATIBILITY] ON,and [ITKV3COMPATIBILITY] ON
 make
 ```
-
-2. Intall proper CMake version (3.1.0 and above) if do not have one ready on your machine https://cmake.org/install/.
 
 3. Clone the GDR git repository:
 ```
