@@ -23,7 +23,7 @@ tar xvzf InsightToolkit-4.8.2.tar.gz
 2) Install ITK
 mkdir ITK-bld
 cd ITK-bld
-ccmake ../InsightToolkit-4.8.2 with the following options: [ModuleITKReview] ON, and [ITKV3COMPATIBILITY] ON
+ccmake ../InsightToolkit-4.8.2 with the following options: [Module_ITKReview] ON, [Module_ITKV3COMPATIBILITY] ON,and [ITKV3COMPATIBILITY] ON
 make
 ```
 
