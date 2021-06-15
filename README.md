@@ -11,10 +11,10 @@ The GDR algorithm removes respiratory motion artifacts in 4DCT lung images by (1
 We have demonstrated that the GDR algorithm is more effective than the state-of-the-art Geodesic Intensity Regression (GIR) algorithm for removing clinically observed motion artifacts in treatment planning 4DCT scans. The following representative result demonstrates the promising performance of GDR in reducing real motion artifact.
 ![](images/GDR_result.PNG)
 
-### Computation Requirement
-To efficiently run the GDR code, we recommend a minimum computer memory of 256GB and a minimum number of CPU cores to be 16.
+### Computater Requirement
+To efficiently run the GDR code, we recommend a Linux machine with a minimum computer memory of 256GB and a minimum number of CPU cores of 16.
 
-### How to Install the GDR Program
+### Steps to Install the GDR Program
 1. Install the Insight Toolkit (ITK)
 ```
 1) Download ITK 4.8.2 source code: 
@@ -28,7 +28,7 @@ ccmake ../InsightToolkit-4.8.2 with the following options: [ModuleITKReview] ON,
 
 2. Intall CMake by following instructions in https://cmake.org/install/.
 
-3. Clone the repository:
+3. Clone the GDR git repository:
 ```
 git clone https://github.com/Wei-Shao-Reg/GDR.git
 mkdir GDR-bld
@@ -40,11 +40,11 @@ make
 ### How to Run the GDR Program
 ```
 1. Create a parameter file, see parameter/param.txt for an example and parameter/param_exp.txt for an explanation of the parameters.
-2. Run the GDR regression by running GDR3D param.txt.
+2. Run the GDR regression by executing: GDR3D param.txt
 ```
 
 ### Contact Informaiton
-If you have any trouble installing or running the program, you can contact Wei Shao via weishao@stanford.edu.
+If you have any trouble installing or running the GDR code, you can contact Wei Shao via weishao@stanford.edu.
 
 ### BibTeX
 
