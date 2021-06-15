@@ -26,7 +26,7 @@ cd ITK-bld
 ccmake ../InsightToolkit-4.8.2 with the following options: [ModuleITKReview] ON, and [ITKV3COMPATIBILITY] ON
 ```
 
-2. Intall CMake by following instructions in https://cmake.org/install/.
+2. Intall proper CMake version (3.1.0 and above) if do not have one ready on your machine https://cmake.org/install/.
 
 3. Clone the GDR git repository:
 ```
