@@ -1,6 +1,6 @@
 # Geodesic Density Regression for Correcting 4DCT Pulmonary Respiratory Motion Artifacts
 
-<img src="images/pipeline.png" width="1000">
+<img src="images/pipeline.png" align="center" width="800">
 
 This is a C++ implementation of a Geodesic Density Regression (GDR) algorithm presented in the following research paper:
 
@@ -11,7 +11,7 @@ The GDR algorithm removes respiratory motion artifacts in 4DCT lung images by (1
 
 We have demonstrated that the GDR algorithm is more effective than the state-of-the-art Geodesic Intensity Regression (GIR) algorithm for removing clinically observed motion artifacts in treatment planning 4DCT scans. The following representative result demonstrates the promising performance of GDR in reducing real motion artifact.
 
-<img src="images/GDR_result.PNG" width="400">
+<img src="images/GDR_result.PNG" align="center" width="500">
 
 ### Computater Requirement
 To efficiently run the GDR code, we recommend a Linux machine with a minimum computer memory of 256GB and a minimum number of CPU cores of 16.
