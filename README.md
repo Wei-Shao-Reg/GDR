@@ -13,7 +13,7 @@ We have demonstrated that the GDR algorithm is more effective than the state-of-
 
 <img src="images/GDR_result.PNG" align="center" width="500">
 
-### Computater Requirement
+### Computer Requirement
 To efficiently run the GDR code, we recommend a Linux machine with a minimum computer memory of 256GB and a minimum number of CPU cores of 16.
 
 ### Steps to Install the GDR Program
