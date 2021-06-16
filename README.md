@@ -14,7 +14,7 @@ We have demonstrated that the GDR algorithm is more effective than the state-of-
 <img src="images/GDR_result.PNG" align="center" width="500">
 
 ### Computer Requirement
-To efficiently run the GDR code, we recommend a Linux machine with a minimum computer memory of 128GB and a minimum number of CPU cores of 16.
+To efficiently run the GDR code, we recommend a machine with a minimum computer memory of 128GB and a minimum number of CPU cores of 16. Our code has been succefully test on Mac OS, Linux Mint, and the Argon Linux HPC at the University of Iowa.
 
 ### Steps to Install the GDR Program
 1. Intall proper CMake version (3.1.0 and above) if do not have one ready on your machine https://cmake.org/install/.
