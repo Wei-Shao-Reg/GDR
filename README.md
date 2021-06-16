@@ -1,7 +1,7 @@
 # Geodesic Density Regression for Correcting 4DCT Pulmonary Respiratory Motion Artifacts
 ![](images/pipeline.png | width=100)
 
-<img src="images/pipeline.png" width="48">
+<img src="images/pipeline.png" width="200">
 
 This is a C++ implementation of a Geodesic Density Regression (GDR) algorithm presented in the following research paper:
 
