@@ -33,6 +33,7 @@ make a note for Argon users qlogin
 
 with the following options: [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON,[ITKV3COMPATIBILITY]=ON, [CMAKE_CXX_FLAGS]=-std=c++11
 make -j {number of cores you want to use}
+cd ..
 ```
 
 3. Clone the GDR git repository:
