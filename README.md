@@ -41,7 +41,7 @@ cd ..
 git clone https://github.com/Wei-Shao-Reg/GDR.git
 mkdir GDR-bld
 cd GDR-bld
-ccmake ../GDR/code/
+ccmake ../GDR/code/ [ITK_DIR] {absolute path of your ITK build}
 make
 ```
 
