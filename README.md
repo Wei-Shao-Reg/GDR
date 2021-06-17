@@ -29,6 +29,8 @@ mkdir ITK-bld
 cd ITK-bld
 ccmake ../InsightToolkit-4.13.2 by doing c, t, c, g, e, 
 
+make a note for Argon users qlogin
+
 with the following options: [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON,[ITKV3COMPATIBILITY]=ON, [CMAKE_CXX_FLAGS]=-std=c++11
 make -j {number of cores you want to use}
 ```
