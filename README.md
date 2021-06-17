@@ -21,13 +21,13 @@ To efficiently run the GDR code, we recommend a machine with a minimum computer 
 
 2. Install the Insight Toolkit (ITK)
 ```
-1) Download ITK 4.8.2 source code: 
+1) Download ITK 4.13.2 source code: 
 wget https://sourceforge.net/projects/itk/files/itk/4.13/InsightToolkit-4.13.2.tar.gz
 tar xvzf InsightToolkit-4.13.2.tar.gz
 2) Install ITK
 mkdir ITK-bld
 cd ITK-bld
-ccmake ../InsightToolkit-4.13.2 with the following options: [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON,[ITKV3COMPATIBILITY]=ON, [CMAKE_CXX_FLAGS]=-std-c++11
+ccmake ../InsightToolkit-4.13.2 with the following options: [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON,[ITKV3COMPATIBILITY]=ON, [CMAKE_CXX_FLAGS]=-std=c++11
 make
 ```
 
