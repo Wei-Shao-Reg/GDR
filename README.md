@@ -30,7 +30,7 @@ cd ITK-bld
 ccmake ../InsightToolkit-4.13.2 by doing c, t, c, g, e, 
 
 with the following options: [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON,[ITKV3COMPATIBILITY]=ON, [CMAKE_CXX_FLAGS]=-std=c++11
-make
+make -j {number of cores you want to use}
 ```
 
 3. Clone the GDR git repository:
