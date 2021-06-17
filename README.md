@@ -27,7 +27,9 @@ tar xvzf InsightToolkit-4.13.2.tar.gz
 2) Install ITK
 mkdir ITK-bld
 cd ITK-bld
-ccmake ../InsightToolkit-4.13.2 with the following options: [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON,[ITKV3COMPATIBILITY]=ON, [CMAKE_CXX_FLAGS]=-std=c++11
+ccmake ../InsightToolkit-4.13.2 by doing c, t, c, g, e, 
+
+with the following options: [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON,[ITKV3COMPATIBILITY]=ON, [CMAKE_CXX_FLAGS]=-std=c++11
 make
 ```
 
