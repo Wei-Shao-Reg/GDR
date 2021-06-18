@@ -51,7 +51,10 @@ make
 
 The "data" folder contains a simulated 2D CT time-series that consists of the 0EX, 20IN, 40IN, 60IN, 80IN, 100IN phases. We have given you the CT images, lung masks, artifact masks, and a parameter file named "param2D.text". A duplication artifat was introduced in the 40IN CT. To remove this duplication artifact, you can run the 2D GDR regression by executing: 
 
-GDR2D ../GDR/data/param2D.txt. 
+```
+mkdir ../GDR/output/
+./GDR2D ../GDR/data/param2D.txt
+```
 
 The output of GDR regression in "../GDR/output/" includes "artifact-free" CT images, Jacobian images, displacement fields at different breathing phases. By comparing "../GDR/output/template_image_at_time_10.nii.gz" with "../GDR/data/40IN.nii.gz", you can see how the duplication artifact has been removed by the GDR regression.
 
