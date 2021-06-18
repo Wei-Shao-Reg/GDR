@@ -46,16 +46,22 @@ make
 ```
 
 
+
+### Test Your Code with Simulated 2D CT time series
+
+The "data" folder contains a simulated 2D CT time-series that consists of the 0EX, 20IN, 40IN, 60IN, 80IN, 100IN phases. We have given you the CT images, lung masks, artifact masks, and a parameter file named "param2D.text". A duplication artifat was introduced in the 40IN CT. To remove this duplication artifact, you can run the 2D GDR regression by executing: 
+
+GDR2D ../GDR/data/param2D.txt. 
+
+The output of GDR regression in "../GDR/output/" includes "artifact-free" CT images, Jacobian images, displacement fields at different breathing phases. By comparing "../GDR/output/template_image_at_time_10.nii.gz" with "../GDR/data/40IN.nii.gz", you can see how the duplication artifact has been removed by the GDR regression.
+
+
 ### How to Run the GDR Program
 ```
 1. Create a parameter file, see parameter/param.txt for an example and parameter/param_exp.txt for an explanation of the parameters.
 2. Run 2D GDR regression by executing: GDR2D {your parameter file}
 3. Or run 3D GDR regression by executing: GDR3D {your parameter file}
 ```
-
-### Test Your Code with Simulated 2D CT time series
-
-The "data" folder contains a simulated 2D CT time-series that consists of the 0EX, 20IN, 40IN, 60IN, 80IN, 100IN phases. We have given you the CT images, lung masks, artifact masks, and a parameter file named "param2D.text". A duplication artifat was introduced in the 40IN CT. To remove this duplication artifact, you can run the 2D GDR regression by executing: GDR2D ../GDR/data/param2D.txt. The output of GDR regression in "../GDR/output/" includes "artifact-free" CT images, Jacobian images, displacement fields at different breathing phases. By comparing "../GDR/output/template_image_at_time_10.nii.gz" with "../GDR/data/40IN.nii.gz", you can see how the duplication artifact has been removed by the GDR regression.
 
 
 ### Contact Informaiton
