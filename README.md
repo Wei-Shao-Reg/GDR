@@ -23,10 +23,10 @@ To efficiently run the GDR code, we recommend a machine with a minimum computer 
 ```
 1) Download ITK 4.12.2 source code: 
 wget https://sourceforge.net/projects/itk/files/itk/4.12/InsightToolkit-4.12.2.tar.gz
-tar xvzf InsightToolkit-4.13.2.tar.gz
+tar xvzf InsightToolkit-4.12.2.tar.gz
 2) Install ITK
-mkdir ITK-bld
-cd ITK-bld
+mkdir ITK-build
+cd ITK-build
 ccmake ../InsightToolkit-4.12.2 by doing c, t, c, g, e, 
 
 make a note for Argon users qlogin
@@ -39,8 +39,8 @@ cd ..
 3. Clone the GDR git repository:
 ```
 git clone https://github.com/Wei-Shao-Reg/GDR.git
-mkdir GDR-bld
-cd GDR-bld
+mkdir GDR-build
+cd GDR-build
 ccmake ../GDR/code/ [ITK_DIR] {absolute path of your ITK build}
 make
 ```
