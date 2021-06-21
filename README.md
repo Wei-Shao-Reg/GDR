@@ -34,7 +34,7 @@ ccmake ../InsightToolkit-4.12.2
 ```
 After you run the above ccmake command, a cmake GUI will pop up, you will do the following to generate a CMakeCache.txt file:
 ```
-i. press [c] to configure, this might take a few minutes
+i. press [c] to configure, this might take a few minutes, at the end, you will see a warning message, press [e] to exit.
 ii. press[t] to see all options, and you will need to set the following options: 
 
 [CMAKE_CXX_FLAGS]=-std=c++11, [ITKV3COMPATIBILITY]=ON, [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON.
