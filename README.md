@@ -32,7 +32,7 @@ mkdir ITK-build
 cd ITK-build
 ccmake ../InsightToolkit-4.12.2
 ```
-After you run the above ccmake command, a cmake GUI will pop up, you will do the following to generate a CMakeCache.txt file:
+After you run the above ccmake command, a cmake GUI will pop up. Then do the following:
 ```
 i. press [c] to configure, this might take a few minutes, at the end, you will see a warning message, press [e] to exit.
 ii. press[t] to see all options, and you will need to set the following options: 
@@ -51,12 +51,11 @@ cd ..
 3. Clone the GDR git repository:
 ```
 git clone https://github.com/Wei-Shao-Reg/GDR.git
-mkdir code/output
 mkdir GDR-build
 cd GDR-build
 ccmake ../GDR/code/ 
 ```
-After you run the above ccmake command, a cmake GUI will pop up, you will do the following to generate a CMakeCache.txt file:
+After you run the above ccmake command, a cmake GUI will pop up. Then do the following:
 ```
 i. press [c] to configure, and set the option [ITK_DIR] to the absolute path your ITK build directory.
 ii. press [c] to configure.
@@ -68,7 +67,7 @@ make
 ```
 
 
-### Test Your Code with Simulated 2D CT time series
+### Test Your Code with Simulated 2D CT time series.
 
 The "data" folder contains a simulated 2D CT time-series that consists of the 0EX, 20IN, 40IN, 60IN, 80IN, 100IN phases. We have given you the CT images, lung masks, artifact masks, and a parameter file named "param2D.text". A duplication artifat was introduced in the 40IN CT. To remove this duplication artifact, you can run the 2D GDR regression by executing: 
 
@@ -80,11 +79,10 @@ mkdir ../GDR/output/
 The output of GDR regression in "../GDR/output/" includes "artifact-free" CT images, Jacobian images, displacement fields at different breathing phases. By comparing "../GDR/output/template_image_at_time_10.nii.gz" with "../GDR/data/40IN.nii.gz", you can see how the duplication artifact has been removed by the GDR regression.
 
 
-### How to Run the GDR Program
+### To summarize, use the following two steps to run the GDR algroithm:
 ```
 1. Create a parameter file, see parameter/param.txt for an example and parameter/param_exp.txt for an explanation of the parameters.
-2. Run 2D GDR regression by executing: GDR2D {your parameter file}
-3. Or run 3D GDR regression by executing: GDR3D {your parameter file}
+2. Run 2D GDR regression by executing: GDR2D {your parameter file} Or run 3D GDR regression by executing: GDR3D {your parameter file}.
 ```
 
 
