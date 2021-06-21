@@ -72,4 +72,4 @@ epsilons=0.001,0.001,0.001,0.001
 # Lagrangian for push-forward, Eulerian for pull-back
 outputDispType=Lagrangian
 
-outputDirectory=/Shared/Christensen_Lab/WeiDissertation/3D/GDR_accuracy/PFS001/SCAN1/output_GDR_LBFGS/
+outputDirectory={your output directory}
