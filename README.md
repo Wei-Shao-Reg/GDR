@@ -30,12 +30,21 @@ tar xvzf InsightToolkit-4.12.2.tar.gz
 2) Install ITK
 mkdir ITK-build
 cd ITK-build
-ccmake ../InsightToolkit-4.12.2 by doing c, t, c, g, e, 
+ccmake ../InsightToolkit-4.12.2
+```
+After you run the above ccmake command, a cmake GUI will pop up, you will do the following to generate a CMakeCache.txt file:
+```
+i. press [c] to configure, this might take a few minutes
+ii. press[t] to see all options, and you will need to set the following options: 
 
-make a note for Argon users qlogin
+[CMAKE_CXX_FLAGS]=-std=c++11, [ITKV3COMPATIBILITY]=ON, [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON.
 
-with the following options: [CMAKE_CXX_FLAGS]=-std=c++11, [ITKV3COMPATIBILITY]=ON, [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON.
-make -j {number of cores you want to use}
+iii. press [c] to configure
+iv. press [g] to generate all necessary files for the build
+```
+Then you run the following command to build ITK:
+```
+make -j{number of cores you want to use}, e.g., make -j56
 cd ..
 ```
 
