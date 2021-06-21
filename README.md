@@ -60,12 +60,12 @@ After you run the above ccmake command, a cmake GUI will pop up, you will do the
 ```
 i. press [c] to configure, and set the option [ITK_DIR] to the absolute path your ITK build directory.
 ii. press [c] to configure.
-iii. press [g] to generate all necessary files for the build.
+iii. press [g] to generate all necessary files for the build, igore the warning message by pressing [e].
 ```
-Then you run the following command to build ITK:
+Then you run the following command to build the GDR program:
+```
 make
 ```
-
 
 
 ### Test Your Code with Simulated 2D CT time series
