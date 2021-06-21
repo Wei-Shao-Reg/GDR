@@ -39,8 +39,8 @@ ii. press[t] to see all options, and you will need to set the following options:
 
 [CMAKE_CXX_FLAGS]=-std=c++11, [ITKV3COMPATIBILITY]=ON, [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON.
 
-iii. press [c] to configure
-iv. press [g] to generate all necessary files for the build
+iii. press [c] to configure, you will see a warning message agian, press [e] to exit.
+iv. press [g] to generate all necessary files for the build.
 ```
 Then you run the following command to build ITK:
 ```
@@ -51,9 +51,18 @@ cd ..
 3. Clone the GDR git repository:
 ```
 git clone https://github.com/Wei-Shao-Reg/GDR.git
+mkdir code/output
 mkdir GDR-build
 cd GDR-build
-ccmake ../GDR/code/ [ITK_DIR] {absolute path of your ITK build}
+ccmake ../GDR/code/ 
+```
+After you run the above ccmake command, a cmake GUI will pop up, you will do the following to generate a CMakeCache.txt file:
+```
+i. press [c] to configure, and set the option [ITK_DIR] to the absolute path your ITK build directory.
+ii. press [c] to configure.
+iii. press [g] to generate all necessary files for the build.
+```
+Then you run the following command to build ITK:
 make
 ```
 
