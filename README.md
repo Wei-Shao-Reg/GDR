@@ -4,7 +4,7 @@
 
 This is a C++ implementation of a Geodesic Density Regression (GDR) algorithm presented in the following research paper:
 
-Shao, W., Pan, Y., Durumeric, O.C., Reinhardt, J. M, Bayouth, J. E, Rusu, M., and Christensen, G.E. . "Geodesic Density Regression for Correcting 4DCT Pulmonary Respiratory Motion Artifacts" [[Medical Image Analysis (MedIA)](https://doi.org/10.1016/j.media.2021.102140)]
+Shao, W., Pan, Y., Durumeric, O.C., Reinhardt, J. M, Bayouth, J. E, Rusu, M., and Christensen, G.E. . "Geodesic Density Regression for Correcting 4DCT Pulmonary Respiratory Motion Artifacts" [[Medical Image Analysis (MedIA)](https://doi.org/10.1016/j.media.2021.102140)], 2021.
 
 ### Introduction
 The GDR algorithm removes respiratory motion artifacts in 4DCT lung images by (1) using binary artifact masks to exclude artifact regions from the regression, and (2) accommodating image intensity change associated with breathing by using a tissue density deformation action.
@@ -14,7 +14,7 @@ We have demonstrated that the GDR algorithm is more effective than the state-of-
 <img src="images/GDR_result.PNG" align="center" width="500">
 
 ### Computer Requirement
-To efficiently run the GDR code, we recommend a machine with a minimum computer memory of 128GB and a minimum number of CPU cores of 16. Our code has been succefully test on MacOS, Linux Mint, and the [[Argon Linux HPC at the University of Iowa] (https://hpc.uiowa.edu/event/63831).]
+To efficiently run the GDR code, we recommend a machine with a minimum computer memory of 128GB and a minimum number of CPU cores of 16. Our code has been succefully test on MacOS, Linux Mint, and the [[Argon Linux HPC at the University of Iowa](https://hpc.uiowa.edu/event/63831).]
 
 ### Steps to Install the GDR Program
 1. Intall proper CMake version (3.1.0 and above) if do not have one ready on your machine https://cmake.org/install/.
