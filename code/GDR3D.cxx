@@ -3,7 +3,37 @@
  @filename GDR3D.cxx
  @author Wei Shao
  @advisor Gary Christensen
- @version 1.0 June 11, 2021
+
+
+If you use this code, please cite the following paper:
+@article{Shao_GDR_2021,
+title = {Geodesic Density Regression for Correcting {4DCT} Pulmonary Respiratory Motion Artifacts},
+journal = {Medical Image Analysis},
+pages = {102140},
+year = {2021},
+issn = {1361-8415},
+doi = {https://doi.org/10.1016/j.media.2021.102140},
+url = {https://www.sciencedirect.com/science/article/pii/S1361841521001869},
+author = {Wei Shao and Yue Pan and Oguz C. Durumeric and Joseph M. Reinhardt and John E. Bayouth and Mirabela Rusu and Gary E. Christensen},
+keywords = {Geodesic regression, Artifact correction, Motion artifact, 4DCT, Image registration, Lung cancer}
+}
+Licensed under the MIT License:
+Copyright 2021 Wei Shao
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
  */
 
 #include <cstdlib>
