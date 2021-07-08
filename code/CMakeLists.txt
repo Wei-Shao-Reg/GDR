@@ -6,6 +6,7 @@ set (CMAKE_CXX_STANDARD 11)
 
 project(GDR)
 
+SET(ITK_DIR "/Users/gec/research/ITK-build")
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 
