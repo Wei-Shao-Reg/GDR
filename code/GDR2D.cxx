@@ -445,7 +445,7 @@ int main(int argc, char *argv[]) {
     
     for(int l=0; l< numberOfInputs - 1; l++)
     {
-        intervalLengths.push_back(1.0/((numberOfInputs-1)*(inputImageTimes.at(l+1) - inputImageTimes.at(l))));
+        intervalLengths.emplace_back(1.0/((numberOfInputs-1)*(inputImageTimes.at(l+1) - inputImageTimes.at(l))));
     }
     
     // number of time points used to parameterize transformations
@@ -1493,7 +1493,7 @@ int main(int argc, char *argv[]) {
                 getCostateError->Update();
                 
                 MultiplyByConstantType::Pointer  multiplyByWeight =  MultiplyByConstantType::New();
-                multiplyByWeight->SetConstant(2.0/(imageWeights.at(level-1)*imageWeights.at(level-1)));
+                multiplyByWeight->SetConstant(2.0f/(imageWeights.at(level-1)*imageWeights.at(level-1)));
                 multiplyByWeight->SetInput(getCostateError->GetOutput());
                 multiplyByWeight->Update();
                 costateImages[numberOfTimeIntervals] = multiplyByWeight-> GetOutput();
@@ -1549,23 +1549,23 @@ int main(int argc, char *argv[]) {
                     
                     //// compute lambda(ti-) = lambda(ti-) + 2/(sigma^2)(I(t_i) - Ii)
                     // get lambda[t_N] = 2/(sigma^2)(I(1) - I_1)
-                    SubtractImageType::Pointer    getCostateError  =  SubtractImageType::New();
-                    getCostateError->SetInput1(stateImages[inputImageTimes.at(k)]);
-                    getCostateError->SetInput2(inputImagesDown[k]);
-                    getCostateError->Update();
+                    SubtractImageType::Pointer    costateError  =  SubtractImageType::New();
+                    costateError->SetInput1(stateImages[inputImageTimes.at(k)]);
+                    costateError->SetInput2(inputImagesDown[k]);
+                    costateError->Update();
                     
                     MultiplyImageType::Pointer         multiplyByArtifactMask2 =  MultiplyImageType::New();
-                    multiplyByArtifactMask2->SetInput1(getCostateError->GetOutput());
+                    multiplyByArtifactMask2->SetInput1(costateError->GetOutput());
                     multiplyByArtifactMask2->SetInput2(inputArtifactMasksDown[k]);
                     multiplyByArtifactMask2->Update();
                     
-                    MultiplyByConstantType::Pointer  multiplyByWeight =  MultiplyByConstantType::New();
-                    multiplyByWeight->SetConstant(2.0/(imageWeights.at(level-1)*imageWeights.at(level-1)));
-                    multiplyByWeight->SetInput(multiplyByArtifactMask2->GetOutput());
-                    multiplyByWeight->Update();
+                    MultiplyByConstantType::Pointer  weight =  MultiplyByConstantType::New();
+                    weight->SetConstant(2.0f / (imageWeights.at(level - 1) * imageWeights.at(level - 1)));
+                    weight->SetInput(multiplyByArtifactMask2->GetOutput());
+                    weight->Update();
                     
                     AddImageType::Pointer    addImage = AddImageType::New();
-                    addImage->SetInput1(multiplyByWeight->GetOutput());
+                    addImage->SetInput1(weight->GetOutput());
                     addImage->SetInput2(costateImages[inputImageTimes.at(k)]);
                     addImage->Update();
                     
@@ -1686,7 +1686,7 @@ int main(int argc, char *argv[]) {
                              std::vector<VectorFieldImageType::Pointer> s_k = VelocitySubtraction(xk[j+1], xk[j]);
                              if (j == M-1)
                              {
-                                 rho[j] = 1.0/VelocityProduct(y_k,s_k);
+                                 rho[j] = 1.0f/VelocityProduct(y_k,s_k);
                              }
                              
                              
@@ -1700,12 +1700,12 @@ int main(int argc, char *argv[]) {
                          
                          for(int j=0; j<=M-1; j++)
                          {
-                             std::vector<VectorFieldImageType::Pointer> y_k = VelocitySubtraction(gk[j+1], gk[j]);
-                             std::vector<VectorFieldImageType::Pointer> s_k = VelocitySubtraction(xk[j+1], xk[j]);
+                             std::vector<VectorFieldImageType::Pointer> velocitySubtraction = VelocitySubtraction(gk[j + 1], gk[j]);
+                             std::vector<VectorFieldImageType::Pointer> subtraction = VelocitySubtraction(xk[j + 1], xk[j]);
                              
-                             float beta_j = rho[j]*VelocityProduct(y_k,Z);
+                             float beta_j = rho[j]*VelocityProduct(velocitySubtraction, Z);
                              
-                             Z = VelocitySubtraction(Z, VelMultiConst( -alpha[j] + beta_j ,s_k));
+                             Z = VelocitySubtraction(Z, VelMultiConst( -alpha[j] + beta_j , subtraction));
                          }
                          // update velocity field based on Z
                          
@@ -1730,7 +1730,7 @@ int main(int argc, char *argv[]) {
                     else
                     {
                         /// if the cost is not decreasing, we need to choose a smaller step size
-                         scale  = scale*0.5;
+                         scale  = scale*0.5f;
                         // std::cout<< "step size too large: "<<  std::endl;
                          for (int i=0; i<=numberOfTimeIntervals; i++)
                          {
@@ -1739,7 +1739,7 @@ int main(int argc, char *argv[]) {
                              MultiplyVectorImageByConstantType::Pointer   multiplyByStepSize  =  MultiplyVectorImageByConstantType::New();
                              /// re-implement in 3D
                             // std::cout << "scale:" << scale << std::endl;
-                             multiplyByStepSize->SetConstant(-1.0*scale);
+                             multiplyByStepSize->SetConstant(-scale);
                              multiplyByStepSize->SetInput(Z[i]);
                              multiplyByStepSize->Update();
                              // update v[i]
@@ -1823,7 +1823,7 @@ int main(int argc, char *argv[]) {
                     {
                         std::vector<VectorFieldImageType::Pointer> y_k = VelocitySubtraction(gk[j+1], gk[j]);
                         std::vector<VectorFieldImageType::Pointer> s_k = VelocitySubtraction(xk[j+1], xk[j]);
-                        rho[j] = 1.0/VelocityProduct(y_k,s_k);
+                        rho[j] = 1.0f/VelocityProduct(y_k,s_k);
                         alpha[j] = rho[j]*VelocityProduct(s_k,q);
                         q = VelocitySubtraction(q, VelMultiConst(alpha[j],y_k));
                     }
@@ -1837,12 +1837,12 @@ int main(int argc, char *argv[]) {
                     
                     for(int j=0; j<=M-1; j++)
                     {
-                        std::vector<VectorFieldImageType::Pointer> y_k = VelocitySubtraction(gk[j+1], gk[j]);
-                        std::vector<VectorFieldImageType::Pointer> s_k = VelocitySubtraction(xk[j+1], xk[j]);
+                        std::vector<VectorFieldImageType::Pointer> velocitySubtraction = VelocitySubtraction(gk[j + 1], gk[j]);
+                        std::vector<VectorFieldImageType::Pointer> subtraction = VelocitySubtraction(xk[j + 1], xk[j]);
                         
-                        float beta_j = rho[j]*VelocityProduct(y_k,Z);
+                        float beta_j = rho[j]*VelocityProduct(velocitySubtraction, Z);
                         
-                        Z = VelocitySubtraction(Z, VelMultiConst( -alpha[j] + beta_j ,s_k));
+                        Z = VelocitySubtraction(Z, VelMultiConst( -alpha[j] + beta_j , subtraction));
                     }
                     // update velocity field based on Z
                     /// the followng code is gradient descent for updating v[t]
@@ -2432,7 +2432,7 @@ int main(int argc, char *argv[]) {
                 getCostateError->Update();
                 
                 MultiplyByConstantType::Pointer  multiplyByWeight =  MultiplyByConstantType::New();
-                multiplyByWeight->SetConstant(2.0/(imageWeights.at(level-1)*imageWeights.at(level-1)));
+                multiplyByWeight->SetConstant(2.0f/(imageWeights.at(level-1)*imageWeights.at(level-1)));
                 multiplyByWeight->SetInput(getCostateError->GetOutput());
                 multiplyByWeight->Update();
                 costateImages[numberOfTimeIntervals] = multiplyByWeight-> GetOutput();
@@ -2537,23 +2537,23 @@ int main(int argc, char *argv[]) {
                     
                     //// compute lambda(ti-) = lambda(ti-) + 2/(sigma^2)(I(t_i) - Ii)
                     // get lambda[t_N] = 2/(sigma^2)(I(1) - I_1)
-                    SubtractImageType::Pointer    getCostateError  =  SubtractImageType::New();
-                    getCostateError->SetInput1(stateImages[inputImageTimes.at(k)]);
-                    getCostateError->SetInput2(inputImagesDown[k]);
-                    getCostateError->Update();
+                    SubtractImageType::Pointer    costateError  =  SubtractImageType::New();
+                    costateError->SetInput1(stateImages[inputImageTimes.at(k)]);
+                    costateError->SetInput2(inputImagesDown[k]);
+                    costateError->Update();
                     
                     MultiplyImageType::Pointer         multiplyByArtifactMask2 =  MultiplyImageType::New();
-                    multiplyByArtifactMask2->SetInput1(getCostateError->GetOutput());
+                    multiplyByArtifactMask2->SetInput1(costateError->GetOutput());
                     multiplyByArtifactMask2->SetInput2(inputArtifactMasksDown[k]);
                     multiplyByArtifactMask2->Update();
                     
-                    MultiplyByConstantType::Pointer  multiplyByWeight =  MultiplyByConstantType::New();
-                    multiplyByWeight->SetConstant(2.0/(imageWeights.at(level-1)*imageWeights.at(level-1)));
-                    multiplyByWeight->SetInput(multiplyByArtifactMask2->GetOutput());
-                    multiplyByWeight->Update();
+                    MultiplyByConstantType::Pointer  weight =  MultiplyByConstantType::New();
+                    weight->SetConstant(2.0f / (imageWeights.at(level - 1) * imageWeights.at(level - 1)));
+                    weight->SetInput(multiplyByArtifactMask2->GetOutput());
+                    weight->Update();
                     
                     AddImageType::Pointer    addImage = AddImageType::New();
-                    addImage->SetInput1(multiplyByWeight->GetOutput());
+                    addImage->SetInput1(weight->GetOutput());
                     addImage->SetInput2(costateImages[inputImageTimes.at(k)]);
                     addImage->Update();
                     
@@ -2662,7 +2662,7 @@ int main(int argc, char *argv[]) {
                 else
                 {
                     /// if the cost is not decreasing, we need to choose a smaller step size
-                    myStepSize = myStepSize*0.5;
+                    myStepSize = myStepSize*0.5f;
                     for (int i=0; i<=numberOfTimeIntervals; i++)
                     {
                         /// choose smaller step size for higher resolution
@@ -2763,7 +2763,7 @@ int main(int argc, char *argv[]) {
         /// compute running time for current resolution
         auto finish = std::chrono::high_resolution_clock::now();
         
-        std::chrono::duration<double> elapsed = finish - start;
+        std::chrono::duration<float> elapsed = finish - start;
         regTimes[level-1] = elapsed.count(); // get execution time in seconds
         int hour = regTimes[level-1]/3600;
         int minute = (regTimes[level-1] - hour*3600)/60;
