@@ -47,9 +47,9 @@ SOFTWARE.
 
 
 #include <cstdlib>
-#include <ctime>
+//#include <ctime>
 #include <random>
-#include <math.h>
+//#include <cmath>
 #include <iostream>
 #include "itkImageFileReader.h"
 #include <itkImageFileWriter.h>
@@ -64,17 +64,17 @@ SOFTWARE.
 // --- itkMultiplyByConstantImageFilter.h,
 // ITK directory: /Users/weishao/src/ITK-bld-4.13.0
 #include <itkMultiplyByConstantImageFilter.h>
-#include <itkSubtractImageFilter.h>
+//#include <itkSubtractImageFilter.h>
 #include <itkGradientImageFilter.h>
 // sigma is in physical units
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
 #include <itkComposeImageFilter.h>
 #include "itkDisplacementFieldTransform.h"
 #include "itkResampleImageFilter.h"
-#include "itkStatisticsImageFilter.h"
+//#include "itkStatisticsImageFilter.h"
 #include "itkDisplacementFieldJacobianDeterminantFilter.h"
-#include <fstream>
-#include "itkDivideImageFilter.h"
+//#include <fstream>
+//#include "itkDivideImageFilter.h"
 #include <chrono>  // for high_resolution_clock
 
 using namespace std;
@@ -88,8 +88,8 @@ typedef itk::Image< VectorPixelType, Dimension >                                
 typedef itk::ImageFileWriter< VectorFieldImageType>                                            VectorImageWriterType;
 typedef itk::DisplacementFieldTransform<float, Dimension>                                      DisplacementTransformType;
 typedef itk::MultiplyImageFilter <ImageType, ImageType >                                       MultiplyImageType;
-typedef itk::MultiplyImageFilter <ImageType, VectorFieldImageType, VectorFieldImageType >      MultiplyVectorImageType;
-typedef itk::MultiplyImageFilter <ImageType, VectorFieldImageType, VectorFieldImageType >      MultiplyScalarAndVectorImageType;
+//typedef itk::MultiplyImageFilter <ImageType, VectorFieldImageType, VectorFieldImageType >      MultiplyVectorImageType;
+//typedef itk::MultiplyImageFilter <ImageType, VectorFieldImageType, VectorFieldImageType >      MultiplyScalarAndVectorImageType;
 typedef itk::VectorIndexSelectionCastImageFilter<VectorFieldImageType, ImageType>              IndexSelectionType;
 typedef itk::DerivativeImageFilter <ImageType, ImageType>                                      DerivativeFilterType;
 typedef itk::AddImageFilter< ImageType, ImageType>                                             AddImageType;
@@ -97,21 +97,21 @@ typedef itk::MultiplyByConstantImageFilter<ImageType, float, ImageType>         
 typedef itk::SubtractImageFilter< ImageType, ImageType >                                       SubtractImageType;
 typedef itk::SubtractImageFilter< VectorFieldImageType, VectorFieldImageType >                 SubtractVectorImageType;
 typedef itk::SmoothingRecursiveGaussianImageFilter<ImageType, ImageType>                       GaussianFilterType;
-typedef itk::SmoothingRecursiveGaussianImageFilter<VectorFieldImageType, VectorFieldImageType> VectorGaussianFilterType;
+//typedef itk::SmoothingRecursiveGaussianImageFilter<VectorFieldImageType, VectorFieldImageType> VectorGaussianFilterType;
 typedef itk::AddImageFilter< VectorFieldImageType, VectorFieldImageType>                       AddVectorImageType;
 typedef itk::ComposeImageFilter<ImageType, VectorFieldImageType>                               ImageToVectorImageFilterType;
 typedef itk::MultiplyByConstantImageFilter<VectorFieldImageType, float, VectorFieldImageType>  MultiplyVectorImageByConstantType;
-typedef itk::GradientImageFilter<ImageType,float>                                              GradientImageType;
+//typedef itk::GradientImageFilter<ImageType,float>                                              GradientImageType;
 typedef itk::ResampleImageFilter<ImageType, ImageType, float>                                  ResampleImageFilterType;
 typedef itk::ResampleImageFilter<VectorFieldImageType, VectorFieldImageType>                   ResampleVectorImageFilterType;
-typedef itk::StatisticsImageFilter<ImageType>                                                  StatisticsImageFilterType;
+//typedef itk::StatisticsImageFilter<ImageType>                                                  StatisticsImageFilterType;
 typedef itk::DisplacementFieldJacobianDeterminantFilter<VectorFieldImageType,float,ImageType>  JacobianFilterType;
-typedef itk::DivideImageFilter <ImageType, ImageType, ImageType >                              DivideImageFilterType;
+//typedef itk::DivideImageFilter <ImageType, ImageType, ImageType >                              DivideImageFilterType;
 
 // the function DivideImage is used to compute the ratio of two tissue density images
 // the images are in [0,100] float, if the denominator is 1% or below, we make the ratio zero
 // the purpose for this is to improve the robustness of our algorithm at the boundaries of the lungs
-ImageType::Pointer DivideImage(ImageType::Pointer N, ImageType::Pointer D){
+ImageType::Pointer DivideImage(const ImageType::Pointer& N, const ImageType::Pointer& D){
     itk::ImageRegionIterator<ImageType> imageIterator1(N,N->GetBufferedRegion());
     itk::ImageRegionIterator<ImageType> imageIterator2(D,D->GetBufferedRegion());
     imageIterator1.GoToBegin();
@@ -166,13 +166,13 @@ float VelocityProduct(std::vector<VectorFieldImageType::Pointer> L, std::vector<
 
 std::vector<VectorFieldImageType::Pointer>  VelMultiConst(float a, std::vector<VectorFieldImageType::Pointer> L)
 {
-    for(int i =0; i < L.size(); i++)
+    for(auto & i : L)
     {
         MultiplyVectorImageByConstantType::Pointer   multiplyByConstant  =  MultiplyVectorImageByConstantType::New();
         multiplyByConstant->SetConstant(a);
-        multiplyByConstant->SetInput(L[i]);
+        multiplyByConstant->SetInput(i);
         multiplyByConstant->Update();
-        L[i] = multiplyByConstant->GetOutput();
+        i = multiplyByConstant->GetOutput();
     }
     return L;
 }
@@ -196,7 +196,7 @@ int main(int argc, char *argv[]) {
     if( argc !=2 )
     {
         std::cerr << "Usage: "<< std::endl;
-        std::cerr << "geodesicRegression2DFlowMaps_LBFGS [parameter file]";
+        std::cerr << argv[0] << " [parameter file]";
         std::cerr << std::endl;
         return EXIT_FAILURE;
     }
@@ -238,7 +238,7 @@ int main(int argc, char *argv[]) {
         while(getline(File, line)){
             if(line[0] == '#' || line.empty())
                 continue;
-            auto delimiterPos = line.find("=");
+            auto delimiterPos = line.find('=');
             string name = line.substr(0, delimiterPos);
             string value = line.substr(delimiterPos + 1);
             if (name == "outputDirectory")
@@ -248,7 +248,7 @@ int main(int argc, char *argv[]) {
         }
     }
     else {
-        std::cerr << "Couldn't open config file \n";
+        std::cerr << "Couldn't open config file: " << argv[1] << std::endl;
         return EXIT_FAILURE;
     }
     
@@ -265,7 +265,7 @@ int main(int argc, char *argv[]) {
         while(getline(cFile, line)){
             if(line[0] == '#' || line.empty())
                 continue;
-            auto delimiterPos = line.find("=");
+            auto delimiterPos = line.find('=');
             string name = line.substr(0, delimiterPos);
             string value = line.substr(delimiterPos + 1);
             
@@ -273,11 +273,11 @@ int main(int argc, char *argv[]) {
             
             if (name == "InputImage")
             {
-                auto Pos1 = value.find(",");
+                auto Pos1 = value.find(',');
                 
                 inputImagePaths.push_back(value.substr(0, Pos1));
                 string temp = value.substr(Pos1 + 1);
-                auto Pos2 = temp.find("=");
+                auto Pos2 = temp.find('=');
                 inputImageTimes.push_back(std::stoi(temp.substr(Pos2+1)));
                 numberOfInputs++;
                 file << "InputImage = " + value + "\n\n";
@@ -285,14 +285,14 @@ int main(int argc, char *argv[]) {
             
             if (name == "InputMask")
             {
-                auto Pos1 = value.find(",");
+                auto Pos1 = value.find(',');
                 inputMaskPaths.push_back(value.substr(0, Pos1));
                 file << "InputMask = " + value + "\n\n";
             }
             
             if (name == "ArtifactMask")
             {
-                auto Pos1 = value.find(",");
+                auto Pos1 = value.find(',');
                 inputArtifactMaskPaths.push_back(value.substr(0, Pos1));
                 file << "ArtifactMask = " + value + "\n\n";
             }
@@ -301,7 +301,7 @@ int main(int argc, char *argv[]) {
             {
                 std::stringstream ss(value);
                 file << "outputDispTimes = " + value + "\n\n";
-                float i;
+                int i;
                 while (ss >> i)
                 {
                     outputDispTimes.push_back(i);
@@ -336,7 +336,7 @@ int main(int argc, char *argv[]) {
                 int i;
                 while (ss >> i)
                 {
-                    imageSmoothingFactors.push_back(i);
+                    imageSmoothingFactors.emplace_back(i);
                     if (ss.peek() == ',')
                         ss.ignore();
                 }
@@ -414,7 +414,7 @@ int main(int argc, char *argv[]) {
                 float i;
                 while (ss >> i)
                 {
-                    numberOfIterations.push_back(i);
+                    numberOfIterations.emplace_back(i);
                     if (ss.peek() == ',')
                     ss.ignore();
                 }
@@ -449,7 +449,7 @@ int main(int argc, char *argv[]) {
     }
     
     // number of time points used to parameterize transformations
-    float numberOfTimeIntervals = inputImageTimes.at(numberOfInputs-1);
+    int numberOfTimeIntervals = inputImageTimes.at(numberOfInputs-1);
     
     const float HU_air = -1000.f; // Hounsfield unit of air
     const float HU_tissue = 55.f; // Hounsfield unit of air tissue
@@ -465,17 +465,17 @@ int main(int argc, char *argv[]) {
         ImageFileReaderType:: Pointer   ImageReader = ImageFileReaderType::New();
         ImageReader->SetFileName(inputImagePaths.at(i));
         ImageReader->Update();
-        inputImages.push_back(ImageReader->GetOutput());
+        inputImages.emplace_back(ImageReader->GetOutput());
         
         ImageFileReaderType:: Pointer   MaskReader = ImageFileReaderType::New();
         MaskReader->SetFileName(inputMaskPaths.at(i));
         MaskReader->Update();
-        inputMasks.push_back(MaskReader->GetOutput());
+        inputMasks.emplace_back(MaskReader->GetOutput());
         
         ImageFileReaderType:: Pointer   ArtifactMaskReader = ImageFileReaderType::New();
         ArtifactMaskReader->SetFileName(inputArtifactMaskPaths.at(i));
         ArtifactMaskReader->Update();
-        inputArtifactMasks.push_back(ArtifactMaskReader->GetOutput());
+        inputArtifactMasks.emplace_back(ArtifactMaskReader->GetOutput());
     }
     //////// end read in input CT images,masks, and artifact masks
     
@@ -485,7 +485,7 @@ int main(int argc, char *argv[]) {
         ImageFileReaderType:: Pointer   ImageReader = ImageFileReaderType::New();
         ImageReader->SetFileName(inputImagePaths.at(i));
         ImageReader->Update();
-        originalInputImages.push_back(ImageReader->GetOutput());
+        originalInputImages.emplace_back(ImageReader->GetOutput());
     }
     
     ////////
@@ -591,7 +591,7 @@ int main(int argc, char *argv[]) {
         
         auto start = std::chrono::high_resolution_clock::now();
         
-        float myStepSize = -1.0*stepSizes.at(level-1);
+        float myStepSize = -stepSizes.at(level-1);
         float tempStepSize;
         
         float convergeRate = 1.0; // cost function convergence rate
@@ -794,7 +794,7 @@ int main(int argc, char *argv[]) {
             resampleImage->SetDefaultPixelValue(0);
             resampleImage->SetInput(inputArtifactMasks[i]);
             resampleImage->Update();
-            inputArtifactMasksDown.push_back(resampleImage->GetOutput());
+            inputArtifactMasksDown.emplace_back(resampleImage->GetOutput());
         }
         
         ///// downsample input images
@@ -822,7 +822,7 @@ int main(int argc, char *argv[]) {
            //     resampleImage->SetInput(multiplyByMask->GetOutput());
                 resampleImage->SetInput(smoothImage->GetOutput());
                 resampleImage->Update();
-                inputImagesDown.push_back(resampleImage->GetOutput());
+                inputImagesDown.emplace_back(resampleImage->GetOutput());
             }
             else
             {
@@ -835,7 +835,7 @@ int main(int argc, char *argv[]) {
                 resampleImage->SetDefaultPixelValue(0);
                 resampleImage->SetInput(inputImages[i]);
                 resampleImage->Update();
-                inputImagesDown.push_back(resampleImage->GetOutput());
+                inputImagesDown.emplace_back(resampleImage->GetOutput());
             }
             
         }
@@ -844,7 +844,7 @@ int main(int argc, char *argv[]) {
         //// ....begin initialization of state I, and costate lambda to be all zeros
         std::vector<ImageType::Pointer>                 stateImages;
         
-       // stateImages.push_back(inputImagesDown[0]);
+       // stateImages.emplace_back(inputImagesDown[0]);
         
         
         std::vector<ImageType::Pointer>                 costateImages;
@@ -853,7 +853,7 @@ int main(int argc, char *argv[]) {
         for(int i =0; i <= numberOfTimeIntervals; i++)
         {
             ImageType::Pointer stateImage = ImageType::New();
-            stateImages.push_back(stateImage);
+            stateImages.emplace_back(stateImage);
             stateImage->SetBufferedRegion(imageRegionDown);
             stateImage->SetSpacing(imageSpacingDown);
             stateImage->SetDirection(inputImages[0]->GetDirection());
@@ -865,7 +865,7 @@ int main(int argc, char *argv[]) {
         for(int i =0; i <= numberOfTimeIntervals; i++)
         {
             ImageType::Pointer costateImage = ImageType::New();
-            costateImages.push_back(costateImage);
+            costateImages.emplace_back(costateImage);
             costateImage->SetBufferedRegion(imageRegionDown);
             costateImage->SetSpacing(imageSpacingDown);
             costateImage->SetDirection(inputImages[0]->GetDirection());
@@ -903,7 +903,7 @@ int main(int argc, char *argv[]) {
         for(int i =0; i <= numberOfTimeIntervals; i++)
         {
             VectorFieldImageType::Pointer  displacement = VectorFieldImageType::New();
-            dispFieldLagrangian.push_back(displacement);
+            dispFieldLagrangian.emplace_back(displacement);
             displacement->SetBufferedRegion(imageRegionDown);
             displacement->SetSpacing(imageSpacingDown);
             displacement->SetDirection(inputImages[0]->GetDirection());
@@ -930,7 +930,7 @@ int main(int argc, char *argv[]) {
         for(int i =0; i <= numberOfTimeIntervals; i++)
         {
             VectorFieldImageType::Pointer  displacement = VectorFieldImageType::New();
-            dispFieldEulerian.push_back(displacement);
+            dispFieldEulerian.emplace_back(displacement);
             displacement->SetBufferedRegion(imageRegionDown);
             displacement->SetSpacing(imageSpacingDown);
             displacement->SetDirection(inputImages[0]->GetDirection());
@@ -1208,12 +1208,12 @@ int main(int argc, char *argv[]) {
                         
                         /// multiply by -interval length
                         MultiplyByConstantType::Pointer   multiplyXByIntervalLength  =  MultiplyByConstantType::New();
-                        multiplyXByIntervalLength->SetConstant(-1.0*intervalLength);
+                        multiplyXByIntervalLength->SetConstant(-intervalLength);
                         multiplyXByIntervalLength->SetInput(addX1->GetOutput());
                         multiplyXByIntervalLength->Update();
                         
                         MultiplyByConstantType::Pointer   multiplyYByIntervalLength  =  MultiplyByConstantType::New();
-                        multiplyYByIntervalLength->SetConstant(-1.0*intervalLength);
+                        multiplyYByIntervalLength->SetConstant(-intervalLength);
                         multiplyYByIntervalLength->SetInput(addY1->GetOutput());
                         multiplyYByIntervalLength->Update();
                         
@@ -2195,12 +2195,12 @@ int main(int argc, char *argv[]) {
                         
                         /// multiply by -interval length
                         MultiplyByConstantType::Pointer   multiplyXByIntervalLength  =  MultiplyByConstantType::New();
-                        multiplyXByIntervalLength->SetConstant(-1.0*intervalLength);
+                        multiplyXByIntervalLength->SetConstant(-intervalLength);
                         multiplyXByIntervalLength->SetInput(addX1->GetOutput());
                         multiplyXByIntervalLength->Update();
                         
                         MultiplyByConstantType::Pointer   multiplyYByIntervalLength  =  MultiplyByConstantType::New();
-                        multiplyYByIntervalLength->SetConstant(-1.0*intervalLength);
+                        multiplyYByIntervalLength->SetConstant(-intervalLength);
                         multiplyYByIntervalLength->SetInput(addY1->GetOutput());
                         multiplyYByIntervalLength->Update();
                         
@@ -2671,7 +2671,7 @@ int main(int argc, char *argv[]) {
                         
                         // multiply by linear search step size
                         MultiplyVectorImageByConstantType::Pointer   multiplyByStepSize  =  MultiplyVectorImageByConstantType::New();
-                        multiplyByStepSize->SetConstant(-1.0*myStepSize);
+                        multiplyByStepSize->SetConstant(-myStepSize);
                         multiplyByStepSize->SetInput(updateField[i]);
                         multiplyByStepSize->Update();
                         
@@ -2830,7 +2830,7 @@ int main(int argc, char *argv[]) {
     for(int i =0; i < numberOfInputs; i++)
     {
         VectorFieldImageType::Pointer  displacement = VectorFieldImageType::New();
-        dispFieldPush.push_back(displacement);
+        dispFieldPush.emplace_back(displacement);
         displacement->SetBufferedRegion(imageRegion);
         displacement->SetSpacing(imageSpacing);
         displacement->SetDirection(inputImages[0]->GetDirection());
@@ -2858,7 +2858,7 @@ int main(int argc, char *argv[]) {
     for(int i =0; i < numberOfInputs; i++)
     {
         VectorFieldImageType::Pointer  displacement = VectorFieldImageType::New();
-        dispFieldPull.push_back(displacement);
+        dispFieldPull.emplace_back(displacement);
         displacement->SetBufferedRegion(imageRegion);
         displacement->SetSpacing(imageSpacing);
         displacement->SetDirection(inputImages[0]->GetDirection());
@@ -3061,12 +3061,12 @@ int main(int argc, char *argv[]) {
             
             /// multiply by -interval length
             MultiplyByConstantType::Pointer   multiplyXByIntervalLengthEulerian  =  MultiplyByConstantType::New();
-            multiplyXByIntervalLengthEulerian->SetConstant(-1.0*intervalLength);
+            multiplyXByIntervalLengthEulerian->SetConstant(-intervalLength);
             multiplyXByIntervalLengthEulerian->SetInput(addX1->GetOutput());
             multiplyXByIntervalLengthEulerian->Update();
             
             MultiplyByConstantType::Pointer   multiplyYByIntervalLengthEulerian  =  MultiplyByConstantType::New();
-            multiplyYByIntervalLengthEulerian->SetConstant(-1.0*intervalLength);
+            multiplyYByIntervalLengthEulerian->SetConstant(-intervalLength);
             multiplyYByIntervalLengthEulerian->SetInput(addY1->GetOutput());
             multiplyYByIntervalLengthEulerian->Update();
             

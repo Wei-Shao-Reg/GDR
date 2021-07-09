@@ -1,0 +1,61 @@
+InputImage=data/0EX.nii.gz,t=0
+InputImage=data/20IN.nii.gz,t=5
+InputImage=data/40IN.nii.gz,t=10
+InputImage=data/60IN.nii.gz,t=15
+InputImage=data/80IN.nii.gz,t=20
+InputImage=data/100IN.nii.gz,t=25
+
+
+
+InputMask=data/0EX.lung.mask.nii.gz,t=0
+InputMask=data/20IN.lung.mask.nii.gz,t=5
+InputMask=data/40IN.lung.mask.nii.gz,t=10
+InputMask=data/60IN.lung.mask.nii.gz,t=15
+InputMask=data/80IN.lung.mask.nii.gz,t=20
+InputMask=data/100IN.lung.mask.nii.gz,t=25
+
+
+
+### masks used to indicate if a voxel has artifact, 0 with artifact, 1 artifact-free
+ArtifactMask=data/artifactMask_0EX.nii.gz,t=0
+ArtifactMask=data/artifactMask_20IN.nii.gz,t=5
+ArtifactMask=data/artifactMask_40IN.nii.gz,t=10
+ArtifactMask=data/artifactMask_60IN.nii.gz,t=15
+ArtifactMask=data/artifactMask_80IN.nii.gz,t=20
+ArtifactMask=data/artifactMask_100IN.nii.gz,t=25
+
+
+# SSD or SSTVD
+similarityCostType=SSTVD
+
+# staring point of final displacement field computation
+outputDispStartTime=0
+
+# time points at which to output a displacement field
+outputDispTimes=0,1,2,3,4,5
+
+# fix the template image or not,True or False
+fixedTemplate=False
+
+numberOfResolutions=4
+
+imageWeights=0.1,0.1,0.1,0.1
+
+# in physical units
+imageSmoothingFactors=8,4,2,1
+
+downsampleFactors=8,4,2,1
+
+# change this to deformation kernel size
+deformationKernelSizes=96,48,24,12
+
+stepSizes= 0.02,0.002,0.0005,0.0001
+
+numberOfIterations=20,20,20,20
+
+epsilons=0.001,0.001,0.001,0.001
+
+# Lagrangian for push-forward, Eulerian for pull-back
+outputDispType=Lagrangian
+
+outputDirectory=output/
