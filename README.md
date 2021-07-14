@@ -39,7 +39,7 @@ ii. press[t] to see all options, and you will need to set the following options:
 
 [CMAKE_CXX_FLAGS]=-std=c++11, [ITKV3COMPATIBILITY]=ON, [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON.
 
-iii. press [c] to configure, you will see a warning message agian, press [e] to exit.
+iii. press [c] to configure, you will see a warning message again, press [e] to exit.
 iv. press [g] to generate all necessary files for the build.
 ```
 Then you run the following command to build ITK:
