@@ -37,9 +37,8 @@ SOFTWARE.
  */
 
 #include <cstdlib>
-#include <ctime>
 #include <random>
-#include <math.h>
+#include <cmath>
 #include <iostream>
 #include "itkImageFileReader.h"
 #include <itkImageFileWriter.h>
@@ -54,17 +53,13 @@ SOFTWARE.
 // --- itkMultiplyByConstantImageFilter.h,
 // ITK directory: /Users/weishao/src/ITK-bld-4.13.0
 #include <itkMultiplyByConstantImageFilter.h>
-#include <itkSubtractImageFilter.h>
 #include <itkGradientImageFilter.h>
 // sigma is in physical units
 #include "itkSmoothingRecursiveGaussianImageFilter.h"
 #include <itkComposeImageFilter.h>
 #include "itkDisplacementFieldTransform.h"
 #include "itkResampleImageFilter.h"
-#include "itkStatisticsImageFilter.h"
 #include "itkDisplacementFieldJacobianDeterminantFilter.h"
-#include <fstream>
-#include "itkDivideImageFilter.h"
 #include <chrono>  // for high_resolution_clock
 
 using namespace std;
@@ -78,8 +73,6 @@ typedef itk::Image< VectorPixelType, Dimension >                                
 typedef itk::ImageFileWriter< VectorFieldImageType>                                            VectorImageWriterType;
 typedef itk::DisplacementFieldTransform<float, Dimension>                                      DisplacementTransformType;
 typedef itk::MultiplyImageFilter <ImageType, ImageType >                                       MultiplyImageType;
-typedef itk::MultiplyImageFilter <ImageType, VectorFieldImageType, VectorFieldImageType >      MultiplyVectorImageType;
-typedef itk::MultiplyImageFilter <ImageType, VectorFieldImageType, VectorFieldImageType >      MultiplyScalarAndVectorImageType;
 typedef itk::VectorIndexSelectionCastImageFilter<VectorFieldImageType, ImageType>              IndexSelectionType;
 typedef itk::DerivativeImageFilter <ImageType, ImageType>                                      DerivativeFilterType;
 typedef itk::AddImageFilter< ImageType, ImageType>                                             AddImageType;
@@ -87,21 +80,17 @@ typedef itk::MultiplyByConstantImageFilter<ImageType, float, ImageType>         
 typedef itk::SubtractImageFilter< ImageType, ImageType >                                       SubtractImageType;
 typedef itk::SubtractImageFilter< VectorFieldImageType, VectorFieldImageType >                 SubtractVectorImageType;
 typedef itk::SmoothingRecursiveGaussianImageFilter<ImageType, ImageType>                       GaussianFilterType;
-typedef itk::SmoothingRecursiveGaussianImageFilter<VectorFieldImageType, VectorFieldImageType> VectorGaussianFilterType;
 typedef itk::AddImageFilter< VectorFieldImageType, VectorFieldImageType>                       AddVectorImageType;
 typedef itk::ComposeImageFilter<ImageType, VectorFieldImageType>                               ImageToVectorImageFilterType;
 typedef itk::MultiplyByConstantImageFilter<VectorFieldImageType, float, VectorFieldImageType>  MultiplyVectorImageByConstantType;
-typedef itk::GradientImageFilter<ImageType,float>                                              GradientImageType;
 typedef itk::ResampleImageFilter<ImageType, ImageType, float>                                  ResampleImageFilterType;
 typedef itk::ResampleImageFilter<VectorFieldImageType, VectorFieldImageType>                   ResampleVectorImageFilterType;
-typedef itk::StatisticsImageFilter<ImageType>                                                  StatisticsImageFilterType;
 typedef itk::DisplacementFieldJacobianDeterminantFilter<VectorFieldImageType,float,ImageType>  JacobianFilterType;
-typedef itk::DivideImageFilter <ImageType, ImageType, ImageType >                              DivideImageFilterType;
 
 // the function DivideImage is used to compute the ratio of two tissue density images
 // the images are in [0,100] float, if the denominator is 1% or below, we make the ratio zero
 // the purpose for this is to improve the robustness of our algorithm at the boundaries of the lungs
-ImageType::Pointer DivideImage(ImageType::Pointer N, ImageType::Pointer D){
+ImageType::Pointer DivideImage(const ImageType::Pointer& N, const ImageType::Pointer& D){
     itk::ImageRegionIterator<ImageType> imageIterator1(N,N->GetBufferedRegion());
     itk::ImageRegionIterator<ImageType> imageIterator2(D,D->GetBufferedRegion());
     imageIterator1.GoToBegin();
@@ -146,13 +135,13 @@ float VelocityProduct(std::vector<VectorFieldImageType::Pointer> L, std::vector<
 
 std::vector<VectorFieldImageType::Pointer>  VelMultiConst(float a, std::vector<VectorFieldImageType::Pointer> L)
 {
-    for(int i =0; i < L.size(); i++)
+    for(auto & i : L)
     {
         MultiplyVectorImageByConstantType::Pointer   multiplyByConstant  =  MultiplyVectorImageByConstantType::New();
         multiplyByConstant->SetConstant(a);
-        multiplyByConstant->SetInput(L[i]);
+        multiplyByConstant->SetInput(i);
         multiplyByConstant->Update();
-        L[i] = multiplyByConstant->GetOutput();
+        i = multiplyByConstant->GetOutput();
     }
     return L;
 }
@@ -174,7 +163,7 @@ int main(int argc, char *argv[]) {
     if( argc !=2 )
     {
         std::cerr << "Usage: "<< std::endl;
-        std::cerr << "geodesicRegression3DFlowMaps [parameter file]";
+        std::cerr << "GDR3D [parameter file]";
         std::cerr << std::endl;
         return EXIT_FAILURE;
     }
@@ -216,7 +205,7 @@ int main(int argc, char *argv[]) {
         while(getline(File, line)){
             if(line[0] == '#' || line.empty())
                 continue;
-            auto delimiterPos = line.find("=");
+            auto delimiterPos = line.find('=');
             string name = line.substr(0, delimiterPos);
             string value = line.substr(delimiterPos + 1);
             if (name == "outputDirectory")
@@ -243,7 +232,7 @@ int main(int argc, char *argv[]) {
         while(getline(cFile, line)){
             if(line[0] == '#' || line.empty())
                 continue;
-            auto delimiterPos = line.find("=");
+            auto delimiterPos = line.find('=');
             string name = line.substr(0, delimiterPos);
             string value = line.substr(delimiterPos + 1);
             
@@ -251,11 +240,11 @@ int main(int argc, char *argv[]) {
             
             if (name == "InputImage")
             {
-                auto Pos1 = value.find(",");
+                auto Pos1 = value.find(',');
                 
                 inputImagePaths.push_back(value.substr(0, Pos1));
                 string temp = value.substr(Pos1 + 1);
-                auto Pos2 = temp.find("=");
+                auto Pos2 = temp.find('=');
                 inputImageTimes.push_back(std::stoi(temp.substr(Pos2+1)));
                 numberOfInputs++;
                 file << "InputImage = " + value + "\n\n";
@@ -263,14 +252,14 @@ int main(int argc, char *argv[]) {
             
             if (name == "InputMask")
             {
-                auto Pos1 = value.find(",");
+                auto Pos1 = value.find(',');
                 inputMaskPaths.push_back(value.substr(0, Pos1));
                 file << "InputMask = " + value + "\n\n";
             }
             
             if (name == "ArtifactMask")
             {
-                auto Pos1 = value.find(",");
+                auto Pos1 = value.find(',');
                 inputArtifactMaskPaths.push_back(value.substr(0, Pos1));
                 file << "ArtifactMask = " + value + "\n\n";
             }
@@ -279,7 +268,7 @@ int main(int argc, char *argv[]) {
             {
                 std::stringstream ss(value);
                 file << "outputDispTimes = " + value + "\n\n";
-                float i;
+                int i;
                 while (ss >> i)
                 {
                     outputDispTimes.push_back(i);
@@ -311,7 +300,7 @@ int main(int argc, char *argv[]) {
             {
                 std::stringstream ss(value);
                 file << "image smoothing factors = " + value + "\n\n";
-                int i;
+                float i;
                 while (ss >> i)
                 {
                     imageSmoothingFactors.push_back(i);
@@ -402,7 +391,7 @@ int main(int argc, char *argv[]) {
             {
                 std::stringstream ss(value);
                 file << "numberOfIterations = " + value + "\n\n";
-                float i;
+                int i;
                 while (ss >> i)
                 {
                     numberOfIterations.push_back(i);
@@ -432,14 +421,14 @@ int main(int argc, char *argv[]) {
     
     
     // number of time points used to parameterize transformations
-    float numberOfTimeIntervals = inputImageTimes.at(numberOfInputs-1);
+    int numberOfTimeIntervals = inputImageTimes.at(numberOfInputs-1);
     
     // compute time interval lengths, i.e., step sizes used to solve O.D.Es
     std::vector<float> intervalLengths;
     
     for(int l=0; l< numberOfInputs - 1; l++)
     {
-        intervalLengths.push_back(1.0/((numberOfInputs-1)*(inputImageTimes.at(l+1) - inputImageTimes.at(l))));
+        intervalLengths.emplace_back(1.0/((numberOfInputs-1)*(inputImageTimes.at(l+1) - inputImageTimes.at(l))));
     }
     
     
@@ -457,17 +446,17 @@ int main(int argc, char *argv[]) {
         ImageFileReaderType:: Pointer   ImageReader = ImageFileReaderType::New();
         ImageReader->SetFileName(inputImagePaths.at(i));
         ImageReader->Update();
-        inputImages.push_back(ImageReader->GetOutput());
+        inputImages.emplace_back(ImageReader->GetOutput());
         
         ImageFileReaderType:: Pointer   MaskReader = ImageFileReaderType::New();
         MaskReader->SetFileName(inputMaskPaths.at(i));
         MaskReader->Update();
-        inputMasks.push_back(MaskReader->GetOutput());
+        inputMasks.emplace_back(MaskReader->GetOutput());
         
         ImageFileReaderType:: Pointer   ArtifactMaskReader = ImageFileReaderType::New();
         ArtifactMaskReader->SetFileName(inputArtifactMaskPaths.at(i));
         ArtifactMaskReader->Update();
-        inputArtifactMasks.push_back(ArtifactMaskReader->GetOutput());
+        inputArtifactMasks.emplace_back(ArtifactMaskReader->GetOutput());
     }
     //////// end read in input CT images,masks, and artifact masks
     
@@ -477,7 +466,7 @@ int main(int argc, char *argv[]) {
         ImageFileReaderType:: Pointer   ImageReader = ImageFileReaderType::New();
         ImageReader->SetFileName(inputImagePaths.at(i));
         ImageReader->Update();
-        originalInputImages.push_back(ImageReader->GetOutput());
+        originalInputImages.emplace_back(ImageReader->GetOutput());
     }
     
     ////////
@@ -584,7 +573,7 @@ int main(int argc, char *argv[]) {
 		
         auto start = std::chrono::high_resolution_clock::now();
         
-        float myStepSize = -1.0*stepSizes.at(level-1);
+        float myStepSize = -stepSizes.at(level-1);
         
         float convergeRate = 1.0; // cost function convergence rate
         
@@ -783,7 +772,7 @@ int main(int argc, char *argv[]) {
             resampleImage->SetDefaultPixelValue(0);
             resampleImage->SetInput(inputArtifactMasks[i]);
             resampleImage->Update();
-            inputArtifactMasksDown.push_back(resampleImage->GetOutput());
+            inputArtifactMasksDown.emplace_back(resampleImage->GetOutput());
         }
         
         ///// downsample input images
@@ -811,7 +800,7 @@ int main(int argc, char *argv[]) {
            //     resampleImage->SetInput(multiplyByMask->GetOutput());
                 resampleImage->SetInput(smoothImage->GetOutput());
                 resampleImage->Update();
-                inputImagesDown.push_back(resampleImage->GetOutput());
+                inputImagesDown.emplace_back(resampleImage->GetOutput());
             }
             else
             {
@@ -824,7 +813,7 @@ int main(int argc, char *argv[]) {
                 resampleImage->SetDefaultPixelValue(0);
                 resampleImage->SetInput(inputImages[i]);
                 resampleImage->Update();
-                inputImagesDown.push_back(resampleImage->GetOutput());
+                inputImagesDown.emplace_back(resampleImage->GetOutput());
             }
             
         }
@@ -1266,16 +1255,16 @@ int main(int argc, char *argv[]) {
                             float f = iterator23.Get();
                             float g = iterator31.Get();
                             float h = iterator32.Get();
-                            float i = 1+ iterator33.Get();
+                            float ii = 1 + iterator33.Get();
                            
-                            float det = a*(e*i - f*h) - b*(d*i-f*g) + c*(d*h-e*g);
+                            float det = a*(e * ii - f * h) - b * (d * ii - f * g) + c * (d * h - e * g);
                             
-                            iterator11.Set((e*i - f*h)/det);
-                            iterator12.Set((c*h - b*i)/det);
+                            iterator11.Set((e * ii - f * h) / det);
+                            iterator12.Set((c*h - b * ii) / det);
                             iterator13.Set((b*f - c*e)/det);
                             
-                            iterator21.Set((f*g - d*i)/det);
-                            iterator22.Set((a*i - c*g)/det);
+                            iterator21.Set((f*g - d * ii) / det);
+                            iterator22.Set((a * ii - c * g) / det);
                             iterator23.Set((c*d - a*f)/det);
                             
                             iterator31.Set((d*h - e*g)/det);
@@ -1392,17 +1381,17 @@ int main(int argc, char *argv[]) {
                         
                         /// multiply by -interval length
                         MultiplyByConstantType::Pointer   multiplyXByIntervalLength  =  MultiplyByConstantType::New();
-                        multiplyXByIntervalLength->SetConstant(-1.0*intervalLength);
+                        multiplyXByIntervalLength->SetConstant(-intervalLength);
                         multiplyXByIntervalLength->SetInput(addX2->GetOutput());
                         multiplyXByIntervalLength->Update();
                         
                         MultiplyByConstantType::Pointer   multiplyYByIntervalLength  =  MultiplyByConstantType::New();
-                        multiplyYByIntervalLength->SetConstant(-1.0*intervalLength);
+                        multiplyYByIntervalLength->SetConstant(-intervalLength);
                         multiplyYByIntervalLength->SetInput(addY2->GetOutput());
                         multiplyYByIntervalLength->Update();
                         
                         MultiplyByConstantType::Pointer   multiplyZByIntervalLength  =  MultiplyByConstantType::New();
-                        multiplyZByIntervalLength->SetConstant(-1.0*intervalLength);
+                        multiplyZByIntervalLength->SetConstant(-intervalLength);
                         multiplyZByIntervalLength->SetInput(addZ2->GetOutput());
                         multiplyZByIntervalLength->Update();
                         
@@ -1687,7 +1676,7 @@ int main(int argc, char *argv[]) {
                 getCostateError->Update();
                 
                 MultiplyByConstantType::Pointer  multiplyByWeight =  MultiplyByConstantType::New();
-                multiplyByWeight->SetConstant(2.0/(imageWeights.at(level-1)*imageWeights.at(level-1)));
+                multiplyByWeight->SetConstant(2.0f/(imageWeights.at(level-1)*imageWeights.at(level-1)));
                 multiplyByWeight->SetInput(getCostateError->GetOutput());
                 multiplyByWeight->Update();
                 costateImages[numberOfTimeIntervals] = multiplyByWeight-> GetOutput();
@@ -1743,23 +1732,23 @@ int main(int argc, char *argv[]) {
                     
                     //// compute lambda(ti-) = lambda(ti-) + 2/(sigma^2)(I(t_i) - Ii)
                     // get lambda[t_N] = 2/(sigma^2)(I(1) - I_1)
-                    SubtractImageType::Pointer    getCostateError  =  SubtractImageType::New();
-                    getCostateError->SetInput1(stateImages[inputImageTimes.at(k)]);
-                    getCostateError->SetInput2(inputImagesDown[k]);
-                    getCostateError->Update();
+                    SubtractImageType::Pointer    costateError  =  SubtractImageType::New();
+                    costateError->SetInput1(stateImages[inputImageTimes.at(k)]);
+                    costateError->SetInput2(inputImagesDown[k]);
+                    costateError->Update();
                     
                     MultiplyImageType::Pointer         multiplyByArtifactMask2 =  MultiplyImageType::New();
-                    multiplyByArtifactMask2->SetInput1(getCostateError->GetOutput());
+                    multiplyByArtifactMask2->SetInput1(costateError->GetOutput());
                     multiplyByArtifactMask2->SetInput2(inputArtifactMasksDown[k]);
                     multiplyByArtifactMask2->Update();
                     
-                    MultiplyByConstantType::Pointer  multiplyByWeight =  MultiplyByConstantType::New();
-                    multiplyByWeight->SetConstant(2.0/(imageWeights.at(level-1)*imageWeights.at(level-1)));
-                    multiplyByWeight->SetInput(multiplyByArtifactMask2->GetOutput());
-                    multiplyByWeight->Update();
+                    MultiplyByConstantType::Pointer  byWeight =  MultiplyByConstantType::New();
+                    byWeight->SetConstant(2.0f / (imageWeights.at(level - 1) * imageWeights.at(level - 1)));
+                    byWeight->SetInput(multiplyByArtifactMask2->GetOutput());
+                    byWeight->Update();
                     
                     AddImageType::Pointer    addImage = AddImageType::New();
-                    addImage->SetInput1(multiplyByWeight->GetOutput());
+                    addImage->SetInput1(byWeight->GetOutput());
                     addImage->SetInput2(costateImages[inputImageTimes.at(k)]);
                     addImage->Update();
                     
@@ -1897,7 +1886,7 @@ int main(int argc, char *argv[]) {
                              std::vector<VectorFieldImageType::Pointer> s_k = VelocitySubtraction(xk[j+1], xk[j]);
                              if (j == M-1)
                              {
-                                 rho[j] = 1.0/VelocityProduct(y_k,s_k);
+                                 rho[j] = 1.0f/VelocityProduct(y_k,s_k);
                              }
                              
                              
@@ -1911,12 +1900,12 @@ int main(int argc, char *argv[]) {
                          
                          for(int j=0; j<=M-1; j++)
                          {
-                             std::vector<VectorFieldImageType::Pointer> y_k = VelocitySubtraction(gk[j+1], gk[j]);
-                             std::vector<VectorFieldImageType::Pointer> s_k = VelocitySubtraction(xk[j+1], xk[j]);
+                             std::vector<VectorFieldImageType::Pointer> velocitySubtraction = VelocitySubtraction(gk[j + 1], gk[j]);
+                             std::vector<VectorFieldImageType::Pointer> subtraction = VelocitySubtraction(xk[j + 1], xk[j]);
                              
-                             float beta_j = rho[j]*VelocityProduct(y_k,Z);
+                             float beta_j = rho[j]*VelocityProduct(velocitySubtraction, Z);
                              
-                             Z = VelocitySubtraction(Z, VelMultiConst( -alpha[j] + beta_j ,s_k));
+                             Z = VelocitySubtraction(Z, VelMultiConst( -alpha[j] + beta_j , subtraction));
                          }
                          // update velocity field based on Z
 						 
@@ -1938,10 +1927,10 @@ int main(int argc, char *argv[]) {
                         iter++;
                         cost_pre = cost_cur;
 					}
-					else
+                    else
 					{
 						/// if the cost is not decreasing, we need to choose a smaller step size
-                         scale  = scale*0.5;
+                         scale  = scale*0.5f;
                         // std::cout<< "step size too large: "<<  std::endl;
                          for (int i=0; i<=numberOfTimeIntervals; i++)
                          {
@@ -1950,7 +1939,7 @@ int main(int argc, char *argv[]) {
                              MultiplyVectorImageByConstantType::Pointer   multiplyByStepSize  =  MultiplyVectorImageByConstantType::New();
                              /// re-implement in 3D
                             // std::cout << "scale:" << scale << std::endl;
-                             multiplyByStepSize->SetConstant(-1.0*scale);
+                             multiplyByStepSize->SetConstant(-scale);
                              multiplyByStepSize->SetInput(Z[i]);
                              multiplyByStepSize->Update();
                              // update v[i]
@@ -2052,7 +2041,7 @@ int main(int argc, char *argv[]) {
                     {
                         std::vector<VectorFieldImageType::Pointer> y_k = VelocitySubtraction(gk[j+1], gk[j]);
                         std::vector<VectorFieldImageType::Pointer> s_k = VelocitySubtraction(xk[j+1], xk[j]);
-                        rho[j] = 1.0/VelocityProduct(y_k,s_k);
+                        rho[j] = 1.0f/VelocityProduct(y_k,s_k);
                         alpha[j] = rho[j]*VelocityProduct(s_k,q);
                         q = VelocitySubtraction(q, VelMultiConst(alpha[j],y_k));
                     }
@@ -2066,12 +2055,12 @@ int main(int argc, char *argv[]) {
                     
                     for(int j=0; j<=M-1; j++)
                     {
-                        std::vector<VectorFieldImageType::Pointer> y_k = VelocitySubtraction(gk[j+1], gk[j]);
-                        std::vector<VectorFieldImageType::Pointer> s_k = VelocitySubtraction(xk[j+1], xk[j]);
+                        std::vector<VectorFieldImageType::Pointer> velocitySubtraction = VelocitySubtraction(gk[j + 1], gk[j]);
+                        std::vector<VectorFieldImageType::Pointer> subtraction = VelocitySubtraction(xk[j + 1], xk[j]);
                         
-                        float beta_j = rho[j]*VelocityProduct(y_k,Z);
+                        float beta_j = rho[j]*VelocityProduct(velocitySubtraction, Z);
                         
-                        Z = VelocitySubtraction(Z, VelMultiConst( -alpha[j] + beta_j ,s_k));
+                        Z = VelocitySubtraction(Z, VelMultiConst( -alpha[j] + beta_j , subtraction));
                     }
                     // update velocity field based on Z
                     /// the followng code is gradient descent for updating v[t]
@@ -2511,16 +2500,16 @@ int main(int argc, char *argv[]) {
                             float f = iterator23.Get();
                             float g = iterator31.Get();
                             float h = iterator32.Get();
-                            float i = 1+ iterator33.Get();
+                            float ii = 1 + iterator33.Get();
                             
-                            float det = a*(e*i - f*h) - b*(d*i-f*g) + c*(d*h-e*g);
+                            float det = a*(e * ii - f * h) - b * (d * ii - f * g) + c * (d * h - e * g);
                             
-                            iterator11.Set((e*i - f*h)/det);
-                            iterator12.Set((c*h - b*i)/det);
+                            iterator11.Set((e * ii - f * h) / det);
+                            iterator12.Set((c*h - b * ii) / det);
                             iterator13.Set((b*f - c*e)/det);
                             
-                            iterator21.Set((f*g - d*i)/det);
-                            iterator22.Set((a*i - c*g)/det);
+                            iterator21.Set((f*g - d * ii) / det);
+                            iterator22.Set((a * ii - c * g) / det);
                             iterator23.Set((c*d - a*f)/det);
                             
                             iterator31.Set((d*h - e*g)/det);
@@ -2637,17 +2626,17 @@ int main(int argc, char *argv[]) {
                         
                         /// multiply by -interval length
                         MultiplyByConstantType::Pointer   multiplyXByIntervalLength  =  MultiplyByConstantType::New();
-                        multiplyXByIntervalLength->SetConstant(-1.0*intervalLength);
+                        multiplyXByIntervalLength->SetConstant(-intervalLength);
                         multiplyXByIntervalLength->SetInput(addX2->GetOutput());
                         multiplyXByIntervalLength->Update();
                         
                         MultiplyByConstantType::Pointer   multiplyYByIntervalLength  =  MultiplyByConstantType::New();
-                        multiplyYByIntervalLength->SetConstant(-1.0*intervalLength);
+                        multiplyYByIntervalLength->SetConstant(-intervalLength);
                         multiplyYByIntervalLength->SetInput(addY2->GetOutput());
                         multiplyYByIntervalLength->Update();
                         
                         MultiplyByConstantType::Pointer   multiplyZByIntervalLength  =  MultiplyByConstantType::New();
-                        multiplyZByIntervalLength->SetConstant(-1.0*intervalLength);
+                        multiplyZByIntervalLength->SetConstant(-intervalLength);
                         multiplyZByIntervalLength->SetInput(addZ2->GetOutput());
                         multiplyZByIntervalLength->Update();
                         
@@ -2880,7 +2869,7 @@ int main(int argc, char *argv[]) {
                 getCostateError->Update();
                 
                 MultiplyByConstantType::Pointer  multiplyByWeight =  MultiplyByConstantType::New();
-                multiplyByWeight->SetConstant(2.0/(imageWeights.at(level-1)*imageWeights.at(level-1)));
+                multiplyByWeight->SetConstant(2.0f/(imageWeights.at(level-1)*imageWeights.at(level-1)));
                 multiplyByWeight->SetInput(getCostateError->GetOutput());
                 multiplyByWeight->Update();
                 costateImages[numberOfTimeIntervals] = multiplyByWeight-> GetOutput();
@@ -2985,23 +2974,23 @@ int main(int argc, char *argv[]) {
                     
                     //// compute lambda(ti-) = lambda(ti-) + 2/(sigma^2)(I(t_i) - Ii)
                     // get lambda[t_N] = 2/(sigma^2)(I(1) - I_1)
-                    SubtractImageType::Pointer    getCostateError  =  SubtractImageType::New();
-                    getCostateError->SetInput1(stateImages[inputImageTimes.at(k)]);
-                    getCostateError->SetInput2(inputImagesDown[k]);
-                    getCostateError->Update();
+                    SubtractImageType::Pointer    costateError  =  SubtractImageType::New();
+                    costateError->SetInput1(stateImages[inputImageTimes.at(k)]);
+                    costateError->SetInput2(inputImagesDown[k]);
+                    costateError->Update();
                     
                     MultiplyImageType::Pointer         multiplyByArtifactMask2 =  MultiplyImageType::New();
-                    multiplyByArtifactMask2->SetInput1(getCostateError->GetOutput());
+                    multiplyByArtifactMask2->SetInput1(costateError->GetOutput());
                     multiplyByArtifactMask2->SetInput2(inputArtifactMasksDown[k]);
                     multiplyByArtifactMask2->Update();
                     
-                    MultiplyByConstantType::Pointer  multiplyByWeight =  MultiplyByConstantType::New();
-                    multiplyByWeight->SetConstant(2.0/(imageWeights.at(level-1)*imageWeights.at(level-1)));
-                    multiplyByWeight->SetInput(multiplyByArtifactMask2->GetOutput());
-                    multiplyByWeight->Update();
+                    MultiplyByConstantType::Pointer  byWeight =  MultiplyByConstantType::New();
+                    byWeight->SetConstant(2.0f / (imageWeights.at(level - 1) * imageWeights.at(level - 1)));
+                    byWeight->SetInput(multiplyByArtifactMask2->GetOutput());
+                    byWeight->Update();
                     
                     AddImageType::Pointer    addImage = AddImageType::New();
-                    addImage->SetInput1(multiplyByWeight->GetOutput());
+                    addImage->SetInput1(byWeight->GetOutput());
                     addImage->SetInput2(costateImages[inputImageTimes.at(k)]);
                     addImage->Update();
                     
@@ -3124,7 +3113,7 @@ int main(int argc, char *argv[]) {
                 else
                 {
                     /// if the cost is not decreasing, we need to choose a smaller step size
-                    myStepSize = myStepSize*0.5;
+                    myStepSize = myStepSize*0.5f;
                     for (int i=0; i<=numberOfTimeIntervals; i++)
                     {
                         /// choose smaller step size for higher resolution
@@ -3133,7 +3122,7 @@ int main(int argc, char *argv[]) {
                         
                         // multiply by linear search step size
                         MultiplyVectorImageByConstantType::Pointer   multiplyByStepSize  =  MultiplyVectorImageByConstantType::New();
-                        multiplyByStepSize->SetConstant(-1.0*myStepSize);
+                        multiplyByStepSize->SetConstant(-myStepSize);
                         multiplyByStepSize->SetInput(updateField[i]);
                         multiplyByStepSize->Update();
                         
@@ -3571,16 +3560,16 @@ int main(int argc, char *argv[]) {
                 float f = iterator23.Get();
                 float g = iterator31.Get();
                 float h = iterator32.Get();
-                float i = 1+ iterator33.Get();
+                float ii = 1 + iterator33.Get();
                 
-                float det = a*(e*i - f*h) - b*(d*i-f*g) + c*(d*h-e*g);
+                float det = a*(e * ii - f * h) - b * (d * ii - f * g) + c * (d * h - e * g);
                 
-                iterator11.Set((e*i - f*h)/det);
-                iterator12.Set((c*h - b*i)/det);
+                iterator11.Set((e * ii - f * h) / det);
+                iterator12.Set((c*h - b * ii) / det);
                 iterator13.Set((b*f - c*e)/det);
                 
-                iterator21.Set((f*g - d*i)/det);
-                iterator22.Set((a*i - c*g)/det);
+                iterator21.Set((f*g - d * ii) / det);
+                iterator22.Set((a * ii - c * g) / det);
                 iterator23.Set((c*d - a*f)/det);
                 
                 iterator31.Set((d*h - e*g)/det);
@@ -3690,17 +3679,17 @@ int main(int argc, char *argv[]) {
             
             /// multiply by -interval length
             MultiplyByConstantType::Pointer   multiplyXByIntervalLengthEulerian  =  MultiplyByConstantType::New();
-            multiplyXByIntervalLengthEulerian->SetConstant(-1.0*intervalLength);
+            multiplyXByIntervalLengthEulerian->SetConstant(-intervalLength);
             multiplyXByIntervalLengthEulerian->SetInput(addX2->GetOutput());
             multiplyXByIntervalLengthEulerian->Update();
             
             MultiplyByConstantType::Pointer   multiplyYByIntervalLengthEulerian  =  MultiplyByConstantType::New();
-            multiplyYByIntervalLengthEulerian->SetConstant(-1.0*intervalLength);
+            multiplyYByIntervalLengthEulerian->SetConstant(-intervalLength);
             multiplyYByIntervalLengthEulerian->SetInput(addY2->GetOutput());
             multiplyYByIntervalLengthEulerian->Update();
             
             MultiplyByConstantType::Pointer   multiplyZByIntervalLengthEulerian  =  MultiplyByConstantType::New();
-            multiplyZByIntervalLengthEulerian->SetConstant(-1.0*intervalLength);
+            multiplyZByIntervalLengthEulerian->SetConstant(-intervalLength);
             multiplyZByIntervalLengthEulerian->SetInput(addZ2->GetOutput());
             multiplyZByIntervalLengthEulerian->Update();
             
@@ -4357,16 +4346,16 @@ int main(int argc, char *argv[]) {
                 float f = iterator23.Get();
                 float g = iterator31.Get();
                 float h = iterator32.Get();
-                float i = 1+ iterator33.Get();
+                float k = 1 + iterator33.Get();
                 
-                float det = a*(e*i - f*h) - b*(d*i-f*g) + c*(d*h-e*g);
+                float det = a*(e * k - f * h) - b * (d * k - f * g) + c * (d * h - e * g);
                 
-                iterator11.Set((e*i - f*h)/det);
-                iterator12.Set((c*h - b*i)/det);
+                iterator11.Set((e * k - f * h) / det);
+                iterator12.Set((c*h - b * k) / det);
                 iterator13.Set((b*f - c*e)/det);
                 
-                iterator21.Set((f*g - d*i)/det);
-                iterator22.Set((a*i - c*g)/det);
+                iterator21.Set((f*g - d * k) / det);
+                iterator22.Set((a * k - c * g) / det);
                 iterator23.Set((c*d - a*f)/det);
                 
                 iterator31.Set((d*h - e*g)/det);
@@ -4476,17 +4465,17 @@ int main(int argc, char *argv[]) {
             
             /// multiply by -interval length
             MultiplyByConstantType::Pointer   multiplyXByIntervalLengthEulerian  =  MultiplyByConstantType::New();
-            multiplyXByIntervalLengthEulerian->SetConstant(-1.0*intervalLength);
+            multiplyXByIntervalLengthEulerian->SetConstant(-intervalLength);
             multiplyXByIntervalLengthEulerian->SetInput(addX2->GetOutput());
             multiplyXByIntervalLengthEulerian->Update();
             
             MultiplyByConstantType::Pointer   multiplyYByIntervalLengthEulerian  =  MultiplyByConstantType::New();
-            multiplyYByIntervalLengthEulerian->SetConstant(-1.0*intervalLength);
+            multiplyYByIntervalLengthEulerian->SetConstant(-intervalLength);
             multiplyYByIntervalLengthEulerian->SetInput(addY2->GetOutput());
             multiplyYByIntervalLengthEulerian->Update();
             
             MultiplyByConstantType::Pointer   multiplyZByIntervalLengthEulerian  =  MultiplyByConstantType::New();
-            multiplyZByIntervalLengthEulerian->SetConstant(-1.0*intervalLength);
+            multiplyZByIntervalLengthEulerian->SetConstant(-intervalLength);
             multiplyZByIntervalLengthEulerian->SetInput(addZ2->GetOutput());
             multiplyZByIntervalLengthEulerian->Update();
             
@@ -4593,11 +4582,11 @@ int main(int argc, char *argv[]) {
     if (outputDispType=="Eulerian")
     {
         //// write displacement field
-        for(int i=0; i<outputDispTimes.size(); i++)
+        for(int outputDispTime : outputDispTimes)
         {
             VectorImageWriterType::Pointer  dispFieldWriter = VectorImageWriterType::New();
-            dispFieldWriter->SetFileName(outputDirectory + "dispField_pull_at_time_" + std::to_string(inputImageTimes.at(outputDispTimes.at(i))) + ".nii.gz");
-            dispFieldWriter->SetInput(dispFieldPull[outputDispTimes.at(i)]);
+            dispFieldWriter->SetFileName(outputDirectory + "dispField_pull_at_time_" + std::to_string(inputImageTimes.at(outputDispTime)) + ".nii.gz");
+            dispFieldWriter->SetInput(dispFieldPull[outputDispTime]);
             dispFieldWriter->Update();
         }
         
@@ -4647,11 +4636,11 @@ int main(int argc, char *argv[]) {
     if (outputDispType=="Lagrangian")
     {
         //// write displacement field
-        for(int i=0; i<outputDispTimes.size(); i++)
+        for(int outputDispTime : outputDispTimes)
         {
             VectorImageWriterType::Pointer  dispFieldWriter = VectorImageWriterType::New();
-            dispFieldWriter->SetFileName(outputDirectory + "dispField_push_at_time_" + std::to_string(inputImageTimes.at(outputDispTimes.at(i))) + ".nii.gz");
-            dispFieldWriter->SetInput(dispFieldPush[outputDispTimes.at(i)]);
+            dispFieldWriter->SetFileName(outputDirectory + "dispField_push_at_time_" + std::to_string(inputImageTimes.at(outputDispTime)) + ".nii.gz");
+            dispFieldWriter->SetInput(dispFieldPush[outputDispTime]);
             dispFieldWriter->Update();
         }
         
