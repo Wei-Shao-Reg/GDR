@@ -2,7 +2,7 @@
 
 <img src="images/pipeline.png" align="center" width="800">
 
-This is a C++ implementation of a Geodesic Density Regression (GDR) algorithm presented in the following research paper:
+This is a C++ implementation of the Geodesic Density Regression (GDR) algorithm for 4DCT motion artifacts correction in the following paper:
 
 Shao, W., Pan, Y., Durumeric, O.C., Reinhardt, J. M, Bayouth, J. E, Rusu, M., and Christensen, G.E. . "Geodesic Density Regression for Correcting 4DCT Pulmonary Respiratory Motion Artifacts" [[Medical Image Analysis (MedIA)](https://doi.org/10.1016/j.media.2021.102140)], 2021.
 
@@ -57,7 +57,7 @@ ccmake ../GDR/code/
 ```
 After you run the above ccmake command, a cmake GUI will pop up. Then do the following:
 ```
-i. press [c] to configure, and set the option [ITK_DIR] to the absolute path your ITK build directory.
+i. press [c] to configure, and set the option [ITK_DIR] to the absolute path of your ITK build directory.
 ii. press [c] to configure.
 iii. press [g] to generate all necessary files for the build, igore the warning message by pressing [e].
 ```
@@ -72,17 +72,17 @@ make
 The "data" folder contains a simulated 2D CT time-series that consists of the 0EX, 20IN, 40IN, 60IN, 80IN, 100IN phases. We have given you the CT images, lung masks, artifact masks, and a parameter file named "param2D.text". A duplication artifat was introduced in the 40IN CT. To remove this duplication artifact, you can run the 2D GDR regression by executing: 
 
 ```
-mkdir ../GDR/output/
-./GDR2D ../GDR/data/param2D.txt
+mkdir output
+./GDR2D param2D.txt
 ```
 
-The output of GDR regression in "../GDR/output/" includes "artifact-free" CT images, Jacobian images, displacement fields at different breathing phases. By comparing "../GDR/output/template_image_at_time_10.nii.gz" with "../GDR/data/40IN.nii.gz", you can see how the duplication artifact has been removed by the GDR regression.
+The output of GDR regression in the "output" directory includes "artifact-free" CT images, Jacobian images, displacement fields at different breathing phases. By comparing "../GDR/output/template_image_at_time_10.nii.gz" with "../GDR/data/40IN.nii.gz", you can see how the duplication artifact has been removed by the GDR regression.
 
 
 ### To summarize, use the following two steps to run the GDR algroithm:
 ```
-1. Create a parameter file, see parameter/param.txt for an example and parameter/param_exp.txt for an explanation of the parameters.
-2. Run 2D GDR regression by executing: GDR2D {your parameter file} Or run 3D GDR regression by executing: GDR3D {your parameter file}.
+1. Create a parameter file, see param2D.txt for an example of parameter file for 2D GDR regression, param3D.tx for an example of parameter file for 3D GDR regression, and param_explanation.txt for an explanation of all of the variables.
+2. Run 2D GDR regression by executing: ./GDR2D {path to your parameter file} Or run 3D GDR regression by executing: ./GDR3D {path to your parameter file}.
 ```
 
 
@@ -99,6 +99,7 @@ If you use this code, please cite the following paper:
 title = {Geodesic Density Regression for Correcting {4DCT} Pulmonary Respiratory Motion Artifacts},
 journal = {Medical Image Analysis},
 pages = {102140},
+vol = {68},
 year = {2021},
 issn = {1361-8415},
 doi = {https://doi.org/10.1016/j.media.2021.102140},
