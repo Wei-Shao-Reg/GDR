@@ -10,6 +10,7 @@ If you use this code, please cite the following paper:
 title = {Geodesic Density Regression for Correcting {4DCT} Pulmonary Respiratory Motion Artifacts},
 journal = {Medical Image Analysis},
 pages = {102140},
+vol = {72},
 year = {2021},
 issn = {1361-8415},
 doi = {https://doi.org/10.1016/j.media.2021.102140},
@@ -17,6 +18,7 @@ url = {https://www.sciencedirect.com/science/article/pii/S1361841521001869},
 author = {Wei Shao and Yue Pan and Oguz C. Durumeric and Joseph M. Reinhardt and John E. Bayouth and Mirabela Rusu and Gary E. Christensen},
 keywords = {Geodesic regression, Artifact correction, Motion artifact, 4DCT, Image registration, Lung cancer}
 }
+
 Licensed under the MIT License:
 Copyright 2021 Wei Shao
 Permission is hereby granted, free of charge, to any person obtaining a copy
