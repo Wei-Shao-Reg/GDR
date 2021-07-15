@@ -11,7 +11,7 @@ The GDR algorithm removes respiratory motion artifacts in 4DCT lung images by (1
 
 We have demonstrated that the GDR algorithm is more effective than the state-of-the-art Geodesic Intensity Regression (GIR) algorithm for removing clinically observed motion artifacts in treatment planning 4DCT scans. The following representative result demonstrates the promising performance of GDR in reducing real motion artifact.
 
-<img src="images/GDR_result.png" align="center" width="500">
+<img src="images/GDR_result.png" align="center" width="300">
 
 ### Computer Requirement
 To efficiently run the GDR code, we recommend a machine with a minimum computer memory of 128GB and a minimum number of CPU cores of 16. Our code has been succefully test on MacOS, Linux Mint, and the [[Argon Linux HPC at the University of Iowa](https://hpc.uiowa.edu/event/63831).]
