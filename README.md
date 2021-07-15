@@ -99,7 +99,7 @@ If you use this code, please cite the following paper:
 title = {Geodesic Density Regression for Correcting {4DCT} Pulmonary Respiratory Motion Artifacts},
 journal = {Medical Image Analysis},
 pages = {102140},
-vol = {68},
+vol = {72},
 year = {2021},
 issn = {1361-8415},
 doi = {https://doi.org/10.1016/j.media.2021.102140},
