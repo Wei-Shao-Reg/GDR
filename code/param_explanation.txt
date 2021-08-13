@@ -4,6 +4,8 @@ InputMask = {image path + lung mask filename}, t = {time point}
 
 ArtifactMask = {image path + artifact mask filename}, t = {time point}
 
+scale_LBFGS: initial step size used by LBFGS at each resolution
+
 similarityCostType: “SSTVD” for GDR regression, “SSD” for GIR regression.
 
 outputDispStartTime: the starting time point from which to compute the flow of diffeomorphisms using the resulting time-varying velocity field. For example, if outputDispStartTime=0, then the flow of diffeomorphisms starts from the first input image, if outputDispStartTime=1, then the flow of diffeomorphisms starts from the second input image.
