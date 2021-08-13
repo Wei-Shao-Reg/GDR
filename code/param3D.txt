@@ -38,6 +38,7 @@ ArtifactMask={image path}/60EX_artifact_mask.nii.gz,t=16
 ArtifactMask={image path}/40EX_artifact_mask.nii.gz,t=18
 ArtifactMask={image path}/20EX_artifact_mask.nii.gz,t=20
 
+scale_LBFGS=-1.0,-0.75,-0.5,-0.25
 
 # SSD or SSTVD
 similarityCostType=SSTVD
