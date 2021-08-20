@@ -57,7 +57,7 @@ ccmake ../GDR/code/
 ```
 After you run the above ccmake command, a cmake GUI will pop up. Then do the following:
 ```
-i. press [c] to configure, and set the option [ITK_DIR] to the absolute path of your ITK build directory.
+i. press [c] to configure, and set the option [ITK_DIR] to the absolute path of your ITK build directory, also set [CMAKE_CXX_FLAGS]=-std=c++11.
 ii. press [c] to configure.
 iii. press [g] to generate all necessary files for the build, igore the warning message by pressing [e].
 ```
