@@ -6,7 +6,6 @@ set (CMAKE_CXX_STANDARD 11)
 
 project(GDR)
 
-SET(ITK_DIR "../../ITK-build")
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})
 
@@ -16,5 +15,3 @@ add_executable(GDR3D GDR3D.cxx)
 target_link_libraries(GDR2D ${ITK_LIBRARIES})
 target_link_libraries(GDR3D ${ITK_LIBRARIES})
 
-file(COPY data DESTINATION .)
-file(COPY param2D.txt DESTINATION .)
