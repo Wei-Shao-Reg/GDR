@@ -65,7 +65,7 @@ Then you run the following command to build the GDR program:
 ```
 make
 ```
-
+note: set [CMAKE_CXX_FLAGS]=-std=c++11 will make your code 5 times faster.
 
 ### Test Your Code with Simulated 2D CT time series.
 
