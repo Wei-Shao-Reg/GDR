@@ -62,6 +62,7 @@ SOFTWARE.
 #include "itkDisplacementFieldTransform.h"
 #include "itkResampleImageFilter.h"
 #include "itkDisplacementFieldJacobianDeterminantFilter.h"
+#include "itkNearestNeighborInterpolateImageFunction.h"
 #include <chrono>  // for high_resolution_clock
 
 using namespace std;
@@ -88,6 +89,7 @@ typedef itk::MultiplyByConstantImageFilter<VectorFieldImageType, float, VectorFi
 typedef itk::ResampleImageFilter<ImageType, ImageType, float>                                  ResampleImageFilterType;
 typedef itk::ResampleImageFilter<VectorFieldImageType, VectorFieldImageType>                   ResampleVectorImageFilterType;
 typedef itk::DisplacementFieldJacobianDeterminantFilter<VectorFieldImageType,float,ImageType>  JacobianFilterType;
+typedef itk::NearestNeighborInterpolateImageFunction<ImageType, float>                         NearestNeighborInterpolatorType;
 
 // the function DivideImage is used to compute the ratio of two tissue density images
 // the images are in [0,100] float, if the denominator is 1% or below, we make the ratio zero
@@ -442,6 +444,8 @@ int main(int argc, char *argv[]) {
     std::vector<ImageType::Pointer>      inputMasks; // input CT image masks
     std::vector<ImageType::Pointer>      inputArtifactMasks; // input CT artifact masks
     
+    NearestNeighborInterpolatorType::Pointer  interpolator = NearestNeighborInterpolatorType::New();
+
     //////// begin read in input CT images,masks, and artifact masks
     for (int i=0; i<numberOfInputs;i++)
     {
@@ -449,16 +453,40 @@ int main(int argc, char *argv[]) {
         ImageReader->SetFileName(inputImagePaths.at(i));
         ImageReader->Update();
         inputImages.emplace_back(ImageReader->GetOutput());
+
+        ImageType::RegionType myRegion = inputImages[0]->GetBufferedRegion();
+        ImageType::SizeType   mySize =  myRegion.GetSize();
+        ImageType::SpacingType  mySpacing = inputImages[0]->GetSpacing();
         
+
         ImageFileReaderType:: Pointer   MaskReader = ImageFileReaderType::New();
         MaskReader->SetFileName(inputMaskPaths.at(i));
         MaskReader->Update();
-        inputMasks.emplace_back(MaskReader->GetOutput());
+        ResampleImageFilterType::Pointer   resampleMask = ResampleImageFilterType::New(); 
+        resampleMask->SetInput(MaskReader->GetOutput());
+        resampleMask->SetInterpolator(interpolator);
+        resampleMask->SetSize( mySize);
+        resampleMask->SetOutputOrigin(  inputImages[0]->GetOrigin() );
+        resampleMask->SetOutputSpacing( mySpacing );
+        resampleMask->SetOutputDirection( inputImages[0]->GetDirection() );
+        resampleMask->SetDefaultPixelValue(0);
+        resampleMask->Update();
+        inputMasks.emplace_back(resampleMask->GetOutput());
         
         ImageFileReaderType:: Pointer   ArtifactMaskReader = ImageFileReaderType::New();
         ArtifactMaskReader->SetFileName(inputArtifactMaskPaths.at(i));
         ArtifactMaskReader->Update();
-        inputArtifactMasks.emplace_back(ArtifactMaskReader->GetOutput());
+        ResampleImageFilterType::Pointer   resampleArtifactMask = ResampleImageFilterType::New(); 
+        resampleArtifactMask->SetReferenceImage(ImageReader->GetOutput());
+        resampleArtifactMask->SetInput(ArtifactMaskReader->GetOutput());
+        resampleArtifactMask->SetInterpolator(interpolator);
+        resampleArtifactMask->SetSize( mySize);
+        resampleArtifactMask->SetOutputOrigin(  inputImages[0]->GetOrigin() );
+        resampleArtifactMask->SetOutputSpacing( mySpacing );
+        resampleArtifactMask->SetOutputDirection( inputImages[0]->GetDirection() );
+        resampleArtifactMask->SetDefaultPixelValue(0);
+        resampleArtifactMask->Update();
+        inputArtifactMasks.emplace_back(resampleArtifactMask->GetOutput());
     }
     //////// end read in input CT images,masks, and artifact masks
     
@@ -4663,4 +4691,3 @@ int main(int argc, char *argv[]) {
     
     return EXIT_SUCCESS;
 }
-
