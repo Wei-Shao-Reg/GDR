@@ -37,7 +37,7 @@ After you run the above ccmake command, a cmake GUI will pop up. Then do the fol
 i. press [c] to configure, this might take a few minutes, at the end, you will see a warning message, press [e] to exit.
 ii. press[t] to see all options, and you will need to set the following options: 
 
-[CMAKE_CXX_FLAGS]=-std=c++11, [ITKV3COMPATIBILITY]=ON, [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON.
+[CMAKE_CXX_FLAGS]=-std=c++11, [ITKV3_COMPATIBILITY]=ON, [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON.
 
 iii. press [c] to configure, you will see a warning message again, press [e] to exit.
 iv. press [g] to generate all necessary files for the build.
