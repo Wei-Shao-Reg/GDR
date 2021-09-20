@@ -17,7 +17,7 @@ We have demonstrated that the GDR algorithm is more effective than the state-of-
 To efficiently run the GDR code, we recommend a machine with a minimum computer memory of 128GB and a minimum number of CPU cores of 16. Our code has been succefully test on MacOS, Linux Mint, and the [[Argon Linux HPC at the University of Iowa](https://hpc.uiowa.edu/event/63831).]
 
 ### Steps to Install the GDR Program
-1. Intall proper CMake (3.1.0 and above) if do not have one ready on your machine https://cmake.org/install/. Note, if you have already installed Anaconda, you can just run the following command to install CMake:
+1. Install proper CMake (3.1.0 and above) if do not have one ready on your machine https://cmake.org/install/. Note, if you have already installed Anaconda, you can just run the following command to install CMake:
 ```
 conda install -c anaconda cmake
 ```
