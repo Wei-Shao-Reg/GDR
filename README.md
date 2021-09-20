@@ -47,7 +47,9 @@ cd GDR-build
 cmake -DCMAKE_CXX_FLAGS="-std=c++11" -DCMAKE_BUILD_TYPE:STRING="Release" -DITK_DIR=../ITK-build/  ../GDR/code/
 make
 
+```
 note: set [CMAKE_CXX_FLAGS]=-std=c++11, and set [CMAKE_BUILD_TYPE]=Release will make your code 10 times faster.
+```
 
 ### Test Your Code with Simulated 2D CT time series.
 
