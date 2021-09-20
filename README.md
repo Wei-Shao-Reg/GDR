@@ -31,11 +31,7 @@ tar xvzf InsightToolkit-4.12.2.tar.gz
 mkdir ITK-build
 cd ITK-build
 cmake -DCMAKE_CXX_FLAGS="-std=c++11" -DITKV3_COMPATIBILITY:BOOL=ON -DModule_ITKReview:BOOL=ON -DModule_ITKV3Compatibility:BOOL=ON ../InsightToolkit-4.12.2/
-
-```
-Then you run the following command to build ITK:
-```
-make -j{number of cores you want to use}, e.g., make -j56
+make -j56
 cd ..
 ```
 
