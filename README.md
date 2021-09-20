@@ -23,11 +23,13 @@ conda install -c anaconda cmake
 ```
 
 2. Install the Insight Toolkit (ITK)
-```
 1) Download ITK 4.12.2 source code: 
+```
 wget https://sourceforge.net/projects/itk/files/itk/4.12/InsightToolkit-4.12.2.tar.gz
 tar xvzf InsightToolkit-4.12.2.tar.gz
+```
 2) Install ITK
+```
 mkdir ITK-build
 cd ITK-build
 cmake -DCMAKE_CXX_FLAGS="-std=c++11" -DITKV3_COMPATIBILITY:BOOL=ON -DModule_ITKReview:BOOL=ON -DModule_ITKV3Compatibility:BOOL=ON ../InsightToolkit-4.12.2/
