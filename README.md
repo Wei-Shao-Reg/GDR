@@ -22,6 +22,11 @@ To efficiently run the GDR code, we recommend a machine with a minimum computer 
 conda install -c anaconda cmake
 ```
 
+if you are a sudo user in Linux, you can also run the following command to install CMake:
+```
+sudo apt-get -y install cmake
+```
+
 2. Install the Insight Toolkit (ITK)
 1) Download ITK 4.12.2 source code: 
 ```
