@@ -30,17 +30,8 @@ tar xvzf InsightToolkit-4.12.2.tar.gz
 2) Install ITK
 mkdir ITK-build
 cd ITK-build
-ccmake ../InsightToolkit-4.12.2
-```
-After you run the above ccmake command, a cmake GUI will pop up. Then do the following:
-```
-i. press [c] to configure, this might take a few minutes, at the end, you will see a warning message, press [e] to exit.
-ii. press[t] to see all options, and you will need to set the following options: 
+cmake -DCMAKE_CXX_FLAGS="-std=c++11" -DITKV3_COMPATIBILITY:BOOL=ON -DModule_ITKReview:BOOL=ON -DModule_ITKV3Compatibility:BOOL=ON ../InsightToolkit-4.12.2/
 
-[CMAKE_CXX_FLAGS]=-std=c++11, [ITKV3_COMPATIBILITY]=ON, [Module_ITKReview]=ON, [Module_ITKV3COMPATIBILITY]=ON.
-
-iii. press [c] to configure, you will see a warning message again, press [e] to exit.
-iv. press [g] to generate all necessary files for the build.
 ```
 Then you run the following command to build ITK:
 ```
@@ -53,18 +44,9 @@ cd ..
 git clone https://github.com/Wei-Shao-Reg/GDR.git
 mkdir GDR-build
 cd GDR-build
-ccmake ../GDR/code/ 
-```
-After you run the above ccmake command, a cmake GUI will pop up. Then do the following:
-```
-i. press [c] to configure, and set the option [ITK_DIR] to the absolute path of your ITK build directory, also set [CMAKE_CXX_FLAGS]=-std=c++11.
-ii. press [c] to configure.
-iii. press [g] to generate all necessary files for the build, igore the warning message by pressing [e].
-```
-Then you run the following command to build the GDR program:
-```
+cmake -DCMAKE_CXX_FLAGS="-std=c++11" -DCMAKE_BUILD_TYPE:STRING="Release" -DITK_DIR=../ITK-build/  ../GDR/code/
 make
-```
+
 note: set [CMAKE_CXX_FLAGS]=-std=c++11, and set [CMAKE_BUILD_TYPE]=Release will make your code 10 times faster.
 
 ### Test Your Code with Simulated 2D CT time series.
