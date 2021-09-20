@@ -38,7 +38,7 @@ make -j56
 cd ..
 ```
 
-3. Clone the GDR git repository:
+3. Install the GDR algorithm:
 ```
 git clone https://github.com/Wei-Shao-Reg/GDR.git
 mkdir GDR-build
